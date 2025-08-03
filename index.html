@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mustache Olympics Submission</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #111; }
+        form { display: flex; flex-direction: column; gap: 15px; }
+        label { font-weight: bold; }
+        input[type="text"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { padding: 12px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .terms { display: flex; align-items: center; gap: 10px; }
+        #status { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; display: none; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+
+    <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
+</head>
+<body>
+
+    <h1>Mustache Olympics Submission</h1>
+    <p>Complete the form below to submit your official entry. Good luck!</p>
+
+    <form id="contest-form">
+        <div>
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div>
+            <label for="state">U.S. State</label>
+            <select id="state" name="state" required>
+                <option value="">Select a State</option>
+                <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option>
+            </select>
+        </div>
+        
+        <div>
+            <label>Upload Your 30-Second Video</label>
+            <input type="hidden" role="uploadcare-uploader" data-clearable="true" name="video_file" id="video-uploader" />
+        </div>
+
+        <div class="terms">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to the Terms & Conditions.</label>
+        </div>
+
+        <button type="submit" id="submit-button">Submit My Entry</button>
+    </form>
+
+    <div id="status"></div>
+
+    <script>
+        // --- START: CONFIGURATION ---
+        // ❗️ STEP 2: Replace with your actual Uploadcare Public Key
+        const UPLOADCARE_PUBLIC_KEY = 'YOUR_PUBLIC_KEY_HERE'; 
+        // Find this in your Uploadcare Dashboard -> Project -> API Keys
+
+        // ❗️ STEP 3: Replace with the endpoint URL from your AWS API Gateway
+        const LAMBDA_ENDPOINT = 'YOUR_API_GATEWAY_ENDPOINT_URL_HERE'; 
+        // This is the URL that triggers your AWS Lambda function.
+        // --- END: CONFIGURATION ---
+
+        const widget = uploadcare.Widget('#video-uploader', {
+            publicKey: UPLOADCARE_PUBLIC_KEY,
+            // Uses the validation rules we set in the dashboard (video only)
+        });
+
+        const form = document.getElementById('contest-form');
+        const submitButton = document.getElementById('submit-button');
+        const statusDiv = document.getElementById('status');
+
+        form.addEventListener('submit', async function(event) {
+            // Prevent the form from submitting the traditional way
+            event.preventDefault();
+
+            submitButton.disabled = true;
+            submitButton.innerText = 'Submitting...';
+            statusDiv.style.display = 'none';
+
+            const name = document.getElementById('name').value;
+            const state = document.getElementById('state').value;
+            const fileInfo = widget.value();
+            
+            // Basic validation
+            if (!fileInfo) {
+                showStatus('Please upload a video file.', 'error');
+                submitButton.disabled = false;
+                submitButton.innerText = 'Submit My Entry';
+                return;
+            }
+
+            // This is the data we will send to our Lambda function
+            const payload = {
+                name: name,
+                state: state,
+                fileUUID: fileInfo.uuid
+                // You can add more data here if needed
+            };
+
+            try {
+                const response = await fetch(LAMBDA_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (response.ok) {
+                    showStatus('Success! Your entry has been received. Thank you!', 'success');
+                    form.reset(); // Clear the form
+                    widget.value(null); // Clear the uploader widget
+                } else {
+                    // Handle server errors (e.g., Lambda function failed)
+                    const errorData = await response.json();
+                    showStatus(`Error: ${errorData.message || 'Could not submit your entry.'}`, 'error');
+                    submitButton.disabled = false;
+                    submitButton.innerText = 'Submit My Entry';
+                }
+
+            } catch (error) {
+                // Handle network errors
+                console.error('Submission error:', error);
+                showStatus('A network error occurred. Please try again.', 'error');
+                submitButton.disabled = false;
+                submitButton.innerText = 'Submit My Entry';
+            }
+        });
+
+        function showStatus(message, type) {
+            statusDiv.className = type;
+            statusDiv.innerText = message;
+            statusDiv.style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>
