@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mustache Olympics Submission</title>
+    <title>2025 Mustache Olympics Submission</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 40px auto; padding: 0 20px; text-align: center; }
+        
+        /* --- NEW LOGO STYLE --- */
+        .logo {
+            max-width: 150px;
+            margin: 0 auto 20px auto;
+        }
+
         h1 { color: #111; }
-        form { display: flex; flex-direction: column; gap: 20px; }
+        p { text-align: left; }
+        form { display: flex; flex-direction: column; gap: 20px; text-align: left; }
         label { font-weight: bold; }
         .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
         input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
@@ -19,36 +27,16 @@
         #status { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; display: none; }
         .success { background-color: #d4edda; color: #155724; }
         .error { background-color: #f8d7da; color: #721c24; }
-        
-        /* --- NEW STYLES FOR SECTIONS --- */
-        fieldset {
-            border: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        legend {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #111;
-            margin-bottom: 15px;
-            padding: 0;
-            width: 100%;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-        }
-        .form-blurb {
-            font-size: 0.9em;
-            color: #555;
-            margin: -10px 0 10px 0;
-        }
+        fieldset { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; }
+        legend { font-size: 1.2em; font-weight: bold; color: #111; margin-bottom: 15px; padding: 0; width: 100%; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .form-blurb { font-size: 0.9em; color: #555; margin: -10px 0 10px 0; }
     </style>
 
     <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
 </head>
 <body>
+
+    <img src="black.png" alt="Mustache Olympics Logo" class="logo">
 
     <h1>Mustache Olympics Submission</h1>
     <p>Complete the form below to submit your official entry. Good luck!</p>
@@ -79,7 +67,7 @@
             </div>
             <div class="consent-group">
                 <input type="checkbox" id="consents" name="consents" required>
-                <label for="consents">By checking this box, I confirm I am 18 years of age or older and I agree to receive event updates (which may include special offers) and to the <a href="YOUR_TERMS_PAGE_URL_HERE" target="_blank" rel="noopener noreferrer">Terms, Conditions & Privacy</a>.</label>
+                <label for="consents">By checking this box, I confirm I am 18 years of age or older and I agree to receive event updates (which may include prizes and special offers) and to the <a href="YOUR_TERMS_PAGE_URL_HERE" target="_blank" rel="noopener noreferrer">Terms, Conditions & Privacy</a>.</label>
             </div>
         </fieldset>
 
