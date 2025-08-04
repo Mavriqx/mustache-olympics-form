@@ -1,4 +1,9 @@
-<!DOCTYPE html><html lang="en"><head>
+Of course. Here is the complete and final `index.html` file, incorporating all of our recent changes.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2025 Mustache Olympics Submission</title>
@@ -13,7 +18,6 @@
         label { font-weight: bold; }
         .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
         input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
-        .uploadcare--widget { margin-top: 10px; } /* Spacing Increased */
         button { padding: 12px 20px; background-color: #7B1E25; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.2s; }
         button:hover { background-color: #61181E; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
@@ -26,9 +30,11 @@
         legend { font-size: 1.2em; font-weight: bold; color: #111; margin-bottom: 15px; padding: 0; width: 100%; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
         .form-blurb { font-size: 0.9em; color: #555; margin: -10px 0 10px 0; }
     </style>
-    <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script></head><body>
+    <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
+</head>
+<body>
     <div class="title-container">
-        <img src="Black.png" alt="Mustache Olympics Logo" class="logo">
+        <img src="https://ucarecdn.com/a2b8e3e9-1c19-4b84-9325-31711284b39b/" alt="Mustache Olympics Logo" class="logo">
         <h1>Mustache Olympics Submission</h1>
     </div>
     
@@ -53,6 +59,8 @@
             <legend>Optional Information</legend>
             <p class="form-blurb">This information is a huge help for us in planning future events and understanding our community. We appreciate you taking a moment to share!</p>
             
+            <div><label for="stacheFrequency">How often do you rock a 'stache?</label><select id="stacheFrequency" name="stacheFrequency"><option value="">Please select an option</option><option value="All the time">All the time</option><option value="Sometimes">Sometimes</option><option value="Special occasions">Only for special occasions</option><option value="Barely">Barely / Just starting</option><option value="Never">Never (this is my first time!)</option></select></div>
+            <div><label for="stacheStyled">Do you style your 'stache?</label><select id="stacheStyled" name="stacheStyled"><option value="">Please select an option</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
             <div><label for="source">How did you hear about us?</label><select id="source" name="source"><option value="">Please select an option</option><option value="Friend">Friend sent link to website</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option></select></div>
             <div><label for="socialPlatform">Favorite Social Platform</label><select id="socialPlatform" name="socialPlatform"><option value="">Please select an option</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option><option value="Other">Other</option></select></div>
             <div><label for="socialHandle">Social Media Handle</label><input type="text" id="socialHandle" name="socialHandle" placeholder="@yourhandle"></div>
@@ -96,6 +104,8 @@
                 socialHandle: document.getElementById('socialHandle').value,
                 source: document.getElementById('source').value, 
                 mustacheStyle: document.getElementById('mustacheStyle').value,
+                stacheFrequency: document.getElementById('stacheFrequency').value,
+                stacheStyled: document.getElementById('stacheStyled').value,
                 fileUUID: fileUUID, 
                 consentsAgreed: document.getElementById('consents').checked
             };
@@ -109,4 +119,7 @@
             }
         });
         function showStatus(message, type) { statusDiv.className = type; statusDiv.innerText = message; statusDiv.style.display = 'block'; }
-    </script></body></html>
+    </script>
+</body>
+</html>
+```
