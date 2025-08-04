@@ -60,7 +60,7 @@
     <div id="status"></div>
     <script>
         const UPLOADCARE_PUBLIC_KEY = '2ae8933e05380119b824';
-        const LAMBDA_ENDPOINT = 'https://2kotlptgbomtpbavljmljv65v40nuppq.lambda-url.us-east-2.on.aws/';
+        const LAMBDA_ENDPOINT = 'https://emvywlfsgn5yi24vbhqchmcs4i0emwoc.lambda-url.us-east-2.on.aws/';
         
         document.addEventListener('DOMContentLoaded', () => { const params = new URLSearchParams(window.location.search); const email = params.get('email'); if (email) { document.getElementById('email').value = email; } });
         
@@ -73,11 +73,8 @@
             event.preventDefault();
             submitButton.disabled = true; submitButton.innerText = 'Submitting...'; statusDiv.style.display = 'none';
             
-            // --- START: JavaScript Change ---
             const firstName = document.getElementById('firstName').value;
             const lastName = document.getElementById('lastName').value;
-            // --- END: JavaScript Change ---
-            
             const email = document.getElementById('email').value;
             const city = document.getElementById('city').value;
             const state = document.getElementById('state').value;
@@ -94,7 +91,6 @@
             if (!fileUUID) { showStatus('Please upload a video file.', 'error'); submitButton.disabled = false; submitButton.innerText = 'Submit My Entry'; return; }
             if (!email) { showStatus('Email address is missing. Please ensure you used the link from your registration email.', 'error'); submitButton.disabled = false; submitButton.innerText = 'Submit My Entry'; return; }
             
-            // --- START: Payload Change ---
             const payload = { 
                 firstName: firstName, 
                 lastName: lastName, 
@@ -108,7 +104,6 @@
                 fileUUID: fileUUID, 
                 consentsAgreed: consents 
             };
-            // --- END: Payload Change ---
             
             try {
                 const response = await fetch(LAMBDA_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), });
