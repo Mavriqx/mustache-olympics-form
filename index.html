@@ -16,7 +16,7 @@
         .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
         input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
         .uploadcare--widget { margin-top: 10px; } /* Specific fix for the uploader button spacing */
-        .button-container { display: flex; justify-content: flex-end; } /* New container for button alignment */
+        .button-wrapper { text-align: right; } /* New alignment method */
         button { 
             padding: 12px 20px; 
             background-color: #7B1E25; 
@@ -128,7 +128,7 @@
                 </details>
             </fieldset>
         </div>
-        <div class="button-container">
+        <div class="button-wrapper">
             <button type="submit" id="submit-button">Submit My Entry</button>
         </div>
     </form>
