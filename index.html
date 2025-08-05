@@ -32,6 +32,18 @@
         .section-title { font-size: 1.1em; font-weight: bold; color: #333; margin-top: 20px; margin-bottom: 5px; }
         hr.section-divider { border: 0; height: 1px; background-color: #e0e0e0; margin: 15px 0; }
 
+        /* --- Responsive Styles for Mobile --- */
+        @media (max-width: 600px) {
+            .title-container {
+                flex-direction: column; /* Stack logo and title vertically */
+                gap: 10px;
+                text-align: center;
+            }
+            h1 {
+                font-size: 1.5em; /* Adjust title size for mobile */
+            }
+        }
+
     </style>
     <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
 </head>
