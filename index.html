@@ -15,10 +15,29 @@
         label { font-weight: bold; }
         .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
         input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
-        .uploadcare--widget { margin-top: 10px; } /* Specific fix for the uploader button spacing */
+        
+        /* --- Button and Form Control Styling --- */
+        button[type="submit"] { 
+            padding: 12px 20px; 
+            background-color: #7B1E25; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: background-color 0.2s;
+            align-self: flex-end;
+        }
+        button[type="submit"]:hover { background-color: #61181E; }
+        button[type="submit"]:disabled { background-color: #ccc; cursor: not-allowed; }
         
         .consent-group { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
         .consent-group input { margin-top: 5px; }
+        
+        /* New uploader layout */
+        .upload-container { display: flex; align-items: center; gap: 15px; margin-top: 20px; }
+        .upload-text { font-weight: bold; }
+
         #status { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; display: none; }
         .success { background-color: #d4edda; color: #155724; }
         .error { background-color: #f8d7da; color: #721c24; }
@@ -42,27 +61,6 @@
         .accordion summary::after { content: '+'; position: absolute; right: 20px; font-size: 1.4em; line-height: 1; }
         .accordion[open] summary::after { content: '−'; }
         .accordion-content { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 15px; }
-
-        /* --- New Submit Button Styling --- */
-        .submit-container { display: flex; justify-content: flex-end; align-items: center; margin-top: 20px; gap: 10px; }
-        .submit-text { font-weight: bold; color: #7B1E25; }
-        #submit-button {
-            background-color: #7B1E25;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #submit-button:hover { background-color: #61181E; }
-        #submit-button:disabled { background-color: #ccc; cursor: not-allowed; }
-
 
         /* --- Responsive Styles for Mobile --- */
         @media (max-width: 600px) {
@@ -100,12 +98,10 @@
             <div><label for="lastName">Last Name</label><input type="text" id="lastName" name="lastName" required></div>
             <div><label for="city">City</label><input type="text" id="city" name="city" required></div>
             <div><label for="state">U.S. State</label><select id="state" name="state" required><option value="">Select...</option><option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option></select></div>
-            <div><label>Upload Your Video</label><input type="hidden" role="uploadcare-uploader" data-clearable="true" name="video_file" id="video-uploader" /></div>
             <div class="consent-group"><input type="checkbox" id="consents" name="consents" required><label for="consents">By checking this box, I certify that I’m at least 18 years old, consent to receive event updates (including prizes), and agree to the <a href="YOUR_TERMS_PAGE_URL_HERE" target="_blank" rel="noopener noreferrer">Terms, Conditions & Privacy</a> policy.</label></div>
-            
-            <div class="submit-container">
-                <span class="submit-text">Submit My Entry</span>
-                <button type="submit" id="submit-button">&rarr;</button>
+            <div class="upload-container">
+                <input type="hidden" role="uploadcare-uploader" data-clearable="true" name="video_file" id="video-uploader" />
+                <span class="upload-text">Upload Your Video</span>
             </div>
         </fieldset>
         
@@ -142,6 +138,7 @@
                 </details>
             </fieldset>
         </div>
+        <button type="submit" id="submit-button">Submit My Entry</button>
     </form>
     <div id="status"></div>
     <script>
@@ -158,16 +155,16 @@
         form.addEventListener('submit', async function(event) {
             event.preventDefault();
             submitButton.disabled = true; 
-            submitButton.innerHTML = '...'; // Loading state for icon button
+            submitButton.innerText = 'Submitting...';
             
             const uploaderInput = document.getElementById('video-uploader');
             const cdnUrl = uploaderInput.value;
             let fileUUID = null;
             if (cdnUrl) { const urlParts = cdnUrl.split('/'); if (urlParts.length > 3) { fileUUID = urlParts[3]; } }
-            if (!fileUUID) { showStatus('Please upload a video file.', 'error'); submitButton.disabled = false; submitButton.innerHTML = '&rarr;'; return; }
+            if (!fileUUID) { showStatus('Please upload a video file.', 'error'); submitButton.disabled = false; submitButton.innerText = 'Submit My Entry'; return; }
             
             const email = document.getElementById('email').value;
-            if (!email) { showStatus('Email address is missing. Please ensure you used the link from your registration email.', 'error'); submitButton.disabled = false; submitButton.innerHTML = '&rarr;'; return; }
+            if (!email) { showStatus('Email address is missing. Please ensure you used the link from your registration email.', 'error'); submitButton.disabled = false; submitButton.innerText = 'Submit My Entry'; return; }
             
             const payload = { 
                 firstName: document.getElementById('firstName').value, 
@@ -194,7 +191,7 @@
             } catch (error) { console.error('Submission error:', error); showStatus('A network error occurred. Please try again.', 'error');
             } finally {
                 submitButton.disabled = false; 
-                submitButton.innerHTML = '&rarr;';
+                submitButton.innerText = 'Submit My Entry';
             }
         });
         function showStatus(message, type) { statusDiv.className = type; statusDiv.innerText = message; statusDiv.style.display = 'block'; }
