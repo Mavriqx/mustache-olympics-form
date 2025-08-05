@@ -42,7 +42,6 @@
         .accordion summary::after { content: '+'; position: absolute; right: 20px; font-size: 1.4em; line-height: 1; }
         .accordion[open] summary::after { content: '−'; }
         .accordion-content { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 15px; }
-        /* --- NEW STYLE FOR DISPLAYING THE EMAIL --- */
         .email-display-container { padding: 10px; background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 15px; }
         .email-display-container strong { color: #495057; }
         @media (max-width: 600px) { h1 { font-size: 1.5em; } }
@@ -52,7 +51,7 @@
 <body>
     <div class="title-container">
         <div class="logo-container">
-            <img src="http://googleusercontent.com/file_content/0" alt="Mustache Olympics Logo" class="logo">
+            <img src="Black.png" alt="Mustache Olympics Logo" class="logo">
         </div>
         <div class="title-text-container">
             <h1>2025 Mustache Olympics<br>Official Submission Portal</h1>
@@ -102,7 +101,6 @@
         const LAMBDA_ENDPOINT = 'https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/';
         
         document.addEventListener('DOMContentLoaded', () => { 
-            // --- UPDATED EMAIL HANDLING LOGIC ---
             const emailDisplayDiv = document.getElementById('email-display');
             const emailHiddenInput = document.getElementById('email');
             
@@ -110,14 +108,11 @@
             const emailFromUrl = params.get('email'); 
             
             if (emailFromUrl) { 
-                // 1. Put the email in the hidden input for submission
                 emailHiddenInput.value = emailFromUrl;
-                // 2. Display the email to the user so they know who they are submitting as
                 emailDisplayDiv.innerHTML = `Submitting for: <strong>${emailFromUrl}</strong>`;
                 emailDisplayDiv.style.display = 'block';
             }
 
-            // Style dropdowns on load
             document.querySelectorAll('select').forEach(select => {
                 if (select.value === "") { select.classList.add('placeholder'); }
                 select.addEventListener('change', function() {
@@ -143,7 +138,6 @@
             if (cdnUrl) { const urlParts = cdnUrl.split('/'); if (urlParts.length > 3) { fileUUID = urlParts[3]; } }
             if (!fileUUID) { showStatus('Please upload a video file.', 'error'); submitButton.disabled = false; submitButton.innerText = 'Submit My Entry'; return; }
             
-            // This now reads from the hidden input field
             const email = document.getElementById('email').value;
             if (!email) { showStatus('Email address is missing. Please use the unique link sent to your email.', 'error'); submitButton.disabled = false; submitButton.innerText = 'Submit My Entry'; return; }
             
