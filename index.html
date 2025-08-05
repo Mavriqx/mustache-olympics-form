@@ -16,6 +16,7 @@
         .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
         input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
         .uploadcare--widget { margin-top: 10px; } /* Specific fix for the uploader button spacing */
+        .button-container { display: flex; justify-content: flex-end; } /* New container for button alignment */
         button { 
             padding: 12px 20px; 
             background-color: #7B1E25; 
@@ -24,9 +25,7 @@
             border-radius: 5px; 
             font-size: 16px; 
             cursor: pointer; 
-            transition: background-color 0.2s; 
-            align-self: flex-end; /* Aligns button to the right */
-            width: auto; /* Allows button to size to its content */
+            transition: background-color 0.2s;
         }
         button:hover { background-color: #61181E; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
@@ -39,8 +38,17 @@
         .main-legend { font-size: 1.2em; font-weight: bold; color: #111; margin-bottom: 15px; padding: 0; width: 100%; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
         .form-blurb { font-size: 0.9em; color: #555; margin-bottom: 20px; }
         
+        /* --- Optional Section Container --- */
+        .optional-container {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
         /* --- Accordion Section Styling --- */
-        .accordion { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 10px; }
+        .accordion { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 10px; background-color: #fff; }
         .accordion summary { font-size: 1.1em; font-weight: bold; color: #333; padding: 15px; cursor: pointer; list-style: none; position: relative; }
         .accordion summary::-webkit-details-marker { display: none; } /* Hide default marker */
         .accordion summary::after { content: '+'; position: absolute; right: 20px; font-size: 1.4em; line-height: 1; }
@@ -87,38 +95,42 @@
             <div class="consent-group"><input type="checkbox" id="consents" name="consents" required><label for="consents">By checking this box, I certify that I’m at least 18 years old, consent to receive event updates (including prize announcements), and agree to the <a href="YOUR_TERMS_PAGE_URL_HERE" target="_blank" rel="noopener noreferrer">Terms, Conditions & Privacy</a> policy.</label></div>
         </fieldset>
         
-        <fieldset>
-            <legend class="main-legend">Optional Information</legend>
-            <p class="form-blurb">This information is a huge help for us in planning the 2026 Mustache Olympics and understanding our community. We appreciate you taking an extra minute to share!</p>
-            
-            <details class="accordion">
-                <summary>About Your Talent</summary>
-                <div class="accordion-content">
-                    <div><label for="talentDescription">How would you describe it?</label><select id="talentDescription" name="talentDescription"><option value="">Select...</option><option value="Athletic">Athletic</option><option value="Funny">Funny</option><option value="Artistic">Artistic</option><option value="Outrageous">Outrageous</option></select></div>
-                    <div><label for="talentOrigin">How did you pick it?</label><select id="talentOrigin" name="talentOrigin"><option value="">Select...</option><option value="Family Tradition">Family Tradition</option><option value="Happy Accident">Happy Accident</option><option value="Years of Practice">Years of Practice</option><option value="On a Dare">On a Dare</option><option value="Natural Calling">Natural Calling</option><option value="Just Felt Right">Just Felt Right</option></select></div>
-                </div>
-            </details>
+        <div class="optional-container">
+            <fieldset>
+                <legend class="main-legend" style="border-bottom: none; margin-bottom: 0;">Optional Information</legend>
+                <p class="form-blurb">This information is a huge help for us in planning the 2026 Mustache Olympics and understanding our community. We appreciate you taking an extra minute to share!</p>
+                
+                <details class="accordion">
+                    <summary>About Your Talent</summary>
+                    <div class="accordion-content">
+                        <div><label for="talentDescription">How would you describe it?</label><select id="talentDescription" name="talentDescription"><option value="">Select...</option><option value="Athletic">Athletic</option><option value="Funny">Funny</option><option value="Artistic">Artistic</option><option value="Outrageous">Outrageous</option></select></div>
+                        <div><label for="talentOrigin">How did you pick it?</label><select id="talentOrigin" name="talentOrigin"><option value="">Select...</option><option value="Family Tradition">Family Tradition</option><option value="Happy Accident">Happy Accident</option><option value="Years of Practice">Years of Practice</option><option value="On a Dare">On a Dare</option><option value="Natural Calling">Natural Calling</option><option value="Just Felt Right">Just Felt Right</option></select></div>
+                    </div>
+                </details>
 
-            <details class="accordion">
-                <summary>About Your 'Stache</summary>
-                <div class="accordion-content">
-                    <div><label for="stacheFrequency">How often do you rock one?</label><select id="stacheFrequency" name="stacheFrequency"><option value="">Select...</option><option value="All the time">All the time</option><option value="Sometimes">Sometimes</option><option value="Special Occasions">Special Occasions</option><option value="Barely">Barely</option><option value="Just for this event">Just for this event</option></select></div>
-                    <div><label for="fullness">How would you describe it?</label><select id="fullness" name="fullness"><option value="">Select...</option><option value="Thick & Bushy">Thick & Bushy</option><option value="About Average">About Average</option><option value="Trimmed & Thin">Trimmed & Thin</option></select></div>
-                    <div><label for="generalStyle">How would you describe its style?</label><select id="generalStyle" name="generalStyle"><option value="">Select...</option><option value="Styled / Sculpted">Styled / Sculpted</option><option value="Mostly Natural">Mostly Natural</option><option value="Wild & Untamed">Wild & Untamed</option></select></div>
-                </div>
-            </details>
-            
-            <details class="accordion">
-                <summary>About You</summary>
-                <div class="accordion-content">
-                    <div><label for="source">How did you learn about the event?</label><select id="source" name="source"><option value="">Select...</option><option value="Friend or Family">Friend or Family</option><option value="Social Media">Social Media</option><option value="Event Card">Event Card</option><option value="Other">Other</option></select></div>
-                    <div><label for="socialPlatform">Favorite Social Platform</label><select id="socialPlatform" name="socialPlatform"><option value="">Select...</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option><option value="YouTube">YouTube</option><option value="Other">Other</option></select></div>
-                    <div><label for="socialHandle">Social Media Handle</label><input type="text" id="socialHandle" name="socialHandle" placeholder="@yourhandle"></div>
-                    <div><label for="phone">Phone Number <span class="optional-label">(for event updates via text)</span></label><input type="tel" id="phone" name="phone"></div>
-                </div>
-            </details>
-        </fieldset>
-        <button type="submit" id="submit-button">Submit My Entry</button>
+                <details class="accordion">
+                    <summary>About Your 'Stache</summary>
+                    <div class="accordion-content">
+                        <div><label for="stacheFrequency">How often do you rock one?</label><select id="stacheFrequency" name="stacheFrequency"><option value="">Select...</option><option value="All the time">All the time</option><option value="Sometimes">Sometimes</option><option value="Special Occasions">Special Occasions</option><option value="Barely">Barely</option><option value="Just for this event">Just for this event</option></select></div>
+                        <div><label for="fullness">How would you describe it?</label><select id="fullness" name="fullness"><option value="">Select...</option><option value="Thick & Bushy">Thick & Bushy</option><option value="About Average">About Average</option><option value="Trimmed & Thin">Trimmed & Thin</option></select></div>
+                        <div><label for="generalStyle">How would you describe its style?</label><select id="generalStyle" name="generalStyle"><option value="">Select...</option><option value="Styled / Sculpted">Styled / Sculpted</option><option value="Mostly Natural">Mostly Natural</option><option value="Wild & Untamed">Wild & Untamed</option></select></div>
+                    </div>
+                </details>
+                
+                <details class="accordion">
+                    <summary>About You</summary>
+                    <div class="accordion-content">
+                        <div><label for="source">How did you learn about the event?</label><select id="source" name="source"><option value="">Select...</option><option value="Friend or Family">Friend or Family</option><option value="Social Media">Social Media</option><option value="Event Card">Event Card</option><option value="Other">Other</option></select></div>
+                        <div><label for="socialPlatform">Favorite Social Platform</label><select id="socialPlatform" name="socialPlatform"><option value="">Select...</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option><option value="YouTube">YouTube</option><option value="Other">Other</option></select></div>
+                        <div><label for="socialHandle">Social Media Handle</label><input type="text" id="socialHandle" name="socialHandle" placeholder="@yourhandle"></div>
+                        <div><label for="phone">Phone Number <span class="optional-label">(for event updates via text)</span></label><input type="tel" id="phone" name="phone"></div>
+                    </div>
+                </details>
+            </fieldset>
+        </div>
+        <div class="button-container">
+            <button type="submit" id="submit-button">Submit My Entry</button>
+        </div>
     </form>
     <div id="status"></div>
     <script>
