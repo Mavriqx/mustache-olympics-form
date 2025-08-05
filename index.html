@@ -27,15 +27,15 @@
         legend { font-size: 1.2em; font-weight: bold; color: #111; margin-bottom: 15px; padding: 0; width: 100%; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
         .form-blurb { font-size: 0.9em; color: #555; margin: -10px 0 10px 0; }
         /* Styling for the nested fieldset */
-        .subsection { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-top: 10px; }
+        .subsection { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
         .subsection legend { font-size: 1.1em; color: #333; border-bottom: none; margin-bottom: 15px; padding: 0; }
     </style>
     <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
 </head>
 <body>
     <div class="title-container">
-        <!-- Reverted to a relative path for the logo. Ensure 'Black.png' is in the same folder. -->
-        <img src="Black.png" alt="Mustache Olympics Logo" class="logo" onerror="this.style.display='none'">
+        <!-- Using a stable CDN link for the logo to ensure it always appears -->
+        <img src="https://ucarecdn.com/a2b8e3e9-1c19-4b84-9325-31711284b39b/" alt="Mustache Olympics Logo" class="logo">
         <h1>Mustache Olympics Submission</h1>
     </div>
     
@@ -57,7 +57,7 @@
         </fieldset>
         <fieldset>
             <legend>Optional Information</legend>
-            <p class="form-blurb">This information is a huge help for us in planning future events and understanding our community. We appreciate you taking a moment to share!</p>
+            <p class="form-blurb">This information is a huge help for us in planning the 2026 Mustache Olympics and understanding our community. We appreciate you taking an extra minute to share!</p>
             
             <fieldset class="subsection">
                 <legend>About Your Talent</legend>
@@ -69,13 +69,16 @@
                 <legend>About Your 'Stache</legend>
                 <div><label for="stacheFrequency">How often do you rock one?</label><select id="stacheFrequency" name="stacheFrequency"><option value="">Please select an option</option><option value="All the time">All the time</option><option value="Sometimes">Sometimes</option><option value="Special occasions">Only for special occasions</option><option value="Barely">Barely / Just starting</option><option value="Never">Never (this is my first time!)</option></select></div>
                 <div><label for="fullness">How would you describe it?</label><select id="fullness" name="fullness"><option value="">Please select an option</option><option value="Thick & Bushy">Thick & Bushy</option><option value="About Average">About Average</option><option value="Trimmed & Thin">Trimmed & Thin</option></select></div>
-                <div><label for="generalStyle">How do you style it?</label><select id="generalStyle" name="generalStyle"><option value="">Please select an option</option><option value="Styled / Sculpted">Styled / Sculpted</option><option value="Mostly Natural">Mostly Natural</option><option value="Wild & Untamed">Wild & Untamed</option></select></div>
+                <div><label for="generalStyle">How would you describe its style?</label><select id="generalStyle" name="generalStyle"><option value="">Please select an option</option><option value="Styled / Sculpted">Styled / Sculpted</option><option value="Mostly Natural">Mostly Natural</option><option value="Wild & Untamed">Wild & Untamed</option></select></div>
             </fieldset>
-
-            <div><label for="source">How did you hear about us?</label><select id="source" name="source"><option value="">Please select an option</option><option value="Friend">Friend sent link to website</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option></select></div>
-            <div><label for="socialPlatform">Favorite Social Platform</label><select id="socialPlatform" name="socialPlatform"><option value="">Please select an option</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option><option value="Other">Other</option></select></div>
-            <div><label for="socialHandle">Social Media Handle</label><input type="text" id="socialHandle" name="socialHandle" placeholder="@yourhandle"></div>
-            <div><label for="phone">Phone Number <span class="optional-label">(for event updates via text)</span></label><input type="tel" id="phone" name="phone"></div>
+            
+            <fieldset class="subsection">
+                <legend>About You</legend>
+                <div><label for="source">How did you hear about us?</label><select id="source" name="source"><option value="">Please select an option</option><option value="Friend">Friend sent link to website</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option></select></div>
+                <div><label for="socialPlatform">Favorite Social Platform</label><select id="socialPlatform" name="socialPlatform"><option value="">Please select an option</option><option value="TikTok">TikTok</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option><option value="Other">Other</option></select></div>
+                <div><label for="socialHandle">Social Media Handle</label><input type="text" id="socialHandle" name="socialHandle" placeholder="@yourhandle"></div>
+                <div><label for="phone">Phone Number <span class="optional-label">(for event updates via text)</span></label><input type="tel" id="phone" name="phone"></div>
+            </fieldset>
         </fieldset>
         <button type="submit" id="submit-button">Submit My Entry</button>
     </form>
