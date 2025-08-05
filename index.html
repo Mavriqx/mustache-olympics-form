@@ -14,7 +14,7 @@
         form { display: flex; flex-direction: column; gap: 20px; text-align: left; }
         label { font-weight: bold; }
         .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
-        input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
+        input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; margin-top: 5px; }
         button { padding: 12px 20px; background-color: #7B1E25; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.2s; }
         button:hover { background-color: #61181E; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
@@ -38,6 +38,9 @@
                 flex-direction: column; /* Stack logo and title vertically */
                 gap: 10px;
                 text-align: center;
+            }
+            .logo {
+                max-width: 100px; /* Larger logo on mobile */
             }
             h1 {
                 font-size: 1.5em; /* Adjust title size for mobile */
