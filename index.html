@@ -11,11 +11,17 @@
             flex-direction: column; /* Stacks logo on top of title */
             justify-content: center; 
             align-items: center; 
-            gap: 10px; 
+            gap: 15px; 
             margin-bottom: 20px; 
             text-align: center;
         }
-        .logo { max-width: 240px; height: auto; } /* Increased logo size */
+        .logo-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #fff;
+        }
+        .logo { max-width: 240px; height: auto; display: block; } /* Increased logo size */
         h1 { color: #111; margin: 0; }
         p { text-align: left; }
         .social-promo { background-color: #f4f4f4; border-left: 4px solid #7B1E25; padding: 10px 15px; margin: 20px 0; font-size: 0.95em; }
@@ -112,7 +118,9 @@
 </head>
 <body>
     <div class="title-container">
-        <img src="Black.png" alt="Mustache Olympics Logo" class="logo">
+        <div class="logo-container">
+            <img src="Black.png" alt="Mustache Olympics Logo" class="logo">
+        </div>
         <h1>Mustache Olympics Submission</h1>
     </div>
     
