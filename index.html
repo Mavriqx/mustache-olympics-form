@@ -123,7 +123,12 @@
             });
         });
         
-        const widget = uploadcare.Widget('#video-uploader', { publicKey: UPLOADCARE_PUBLIC_KEY, });
+        // --- UPDATED WIDGET INITIALIZATION ---
+        const widget = uploadcare.Widget('#video-uploader', {
+            publicKey: UPLOADCARE_PUBLIC_KEY,
+            "s3-path": "/${uuid}/${filename}" // This line triggers the S3 backup
+        });
+
         const form = document.getElementById('contest-form');
         const submitButton = document.getElementById('submit-button');
         const statusDiv = document.getElementById('status');
@@ -168,7 +173,6 @@
                     showStatus('Success! Your entry has been received. Redirecting now...', 'success');
                     
                     setTimeout(() => {
-                        // 2. PASTE YOUR THANK YOU PAGE URL HERE
                         window.location.href = 'https://maxstache.com/pages/thanks-for-your-submission';
                     }, 3000);
 
