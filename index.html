@@ -123,10 +123,9 @@
             });
         });
         
-        // --- UPDATED WIDGET INITIALIZATION ---
         const widget = uploadcare.Widget('#video-uploader', {
             publicKey: UPLOADCARE_PUBLIC_KEY,
-            "s3-path": "/${uuid}/${filename}" // This line triggers the S3 backup
+            "s3-path": "/${uuid}/${filename}"
         });
 
         const form = document.getElementById('contest-form');
