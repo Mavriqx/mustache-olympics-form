@@ -5,13 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>2025 Mustache Olympics Submission</title>
 
-  <!-- Uppy styles (primary + fallback) -->
+  <!-- Uppy CSS (primary) -->
   <link rel="stylesheet" href="https://releases.transloadit.com/uppy/v3.9.3/uppy.min.css" />
   <link rel="preconnect" href="https://releases.transloadit.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <noscript>
-    <style>#uppy{display:none}</style>
-  </noscript>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 40px auto; padding: 0 20px; }
@@ -26,7 +24,7 @@
     label { font-weight: bold; }
     .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
     input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
-    button[type="submit"] { padding: 12px 20px; background-color: #7B1E25; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color: 0.2s; align-self: flex-end; }
+    button[type="submit"] { padding: 12px 20px; background-color: #7B1E25; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.2s; align-self: flex-end; }
     button[type="submit"]:hover { background-color: #61181E; }
     button[type="submit"]:disabled { background-color: #ccc; cursor: not-allowed; }
     .consent-group { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
@@ -53,6 +51,10 @@
     .email-display-container strong { color: #495057; }
     #uppy { min-height: 260px; }
     #upload-status { margin-top: 8px; font-size:.95em; color:#555; }
+    #uploader-error { color:#b00020; margin-top:8px; display:none; }
+    /* Fallback uploader */
+    #fallback-uploader { display:none; margin-top:10px; }
+    #fallback-progress { width:100%; height:10px; margin-top:8px; }
     @media (max-width: 600px) { h1 { font-size: 1.5em; } }
   </style>
 </head>
@@ -110,12 +112,15 @@
 
         <div class="upload-wrapper">
           <span class="upload-text">Upload Your Video</span>
-          <div class="upload-container">
-            <div id="uppy"></div>
-          </div>
+          <div class="upload-container"><div id="uppy"></div></div>
           <div id="upload-status"></div>
-          <div id="uploader-error" style="display:none; color:#b00020; margin-top:8px;">
-            We couldn't load the uploader. Please refresh with cache disabled (Ctrl/Cmd+Shift+R).
+          <div id="uploader-error">We couldn't load the uploader. Please refresh with cache disabled (Ctrl/Cmd+Shift+R).</div>
+
+          <!-- Fallback uploader (single-part, still uses your signer endpoints) -->
+          <div id="fallback-uploader">
+            <input type="file" id="fallback-file" accept="video/*" />
+            <progress id="fallback-progress" value="0" max="100"></progress>
+            <div id="fallback-msg" style="margin-top:8px;color:#555;"></div>
           </div>
         </div>
       </fieldset>
@@ -221,91 +226,97 @@
 
   <div id="status"></div>
 
-  <!-- Uppy JS primary -->
-  <script src="https://releases.transloadit.com/uppy/v3.9.3/uppy.min.js"></script>
+  <!-- Uppy JS loader with multi-CDN fallback -->
   <script>
-    // If primary CDN fails to define window.Uppy, load fallback from jsDelivr
-    (function ensureUppyLoaded(cb){
-      function initWhenReady(){
-        if (window.Uppy && Uppy.Core && Uppy.Dashboard && Uppy.AwsS3Multipart) return cb();
-        setTimeout(initWhenReady, 60);
+    const SIGNER_BASE = "https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
+    const BUCKET = "maxstache-uploads-2025-mustache-olympics";
+    const REGION = "us-east-2";
+    const LAMBDA_ENDPOINT = "https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/";
+
+    const statusDiv = document.getElementById('status');
+    const submitButton = document.getElementById('submit-button');
+    const uploadStatus = document.getElementById('upload-status');
+    const uploaderError = document.getElementById('uploader-error');
+    const fallbackUI = document.getElementById('fallback-uploader');
+    const fallbackFile = document.getElementById('fallback-file');
+    const fallbackProgress = document.getElementById('fallback-progress');
+    const fallbackMsg = document.getElementById('fallback-msg');
+
+    function showStatus(msg, type){ statusDiv.className = type; statusDiv.textContent = msg; statusDiv.style.display='block'; }
+    function toPid(email){ return email ? ('PID-' + email.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32)) : 'PID-UNKNOWN'; }
+
+    // Persist email across refreshes
+    (function initEmail(){
+      const emailDisplayDiv = document.getElementById('email-display');
+      const emailHiddenInput = document.getElementById('email');
+      const params = new URLSearchParams(window.location.search);
+      const urlEmail = params.get('email');
+      if (urlEmail) localStorage.setItem('mo_email', urlEmail);
+      const email = urlEmail || localStorage.getItem('mo_email') || '';
+      if (email) {
+        emailHiddenInput.value = email;
+        emailDisplayDiv.innerHTML = `Submitting for: <strong>${email}</strong>`;
+        emailDisplayDiv.style.display = 'block';
       }
-      // try fallback if not present after a short tick
-      setTimeout(function(){
-        if (!window.Uppy) {
-          var s = document.createElement('script');
-          s.src = 'https://cdn.jsdelivr.net/npm/uppy@3.9.3/dist/uppy.min.js';
-          s.onload = initWhenReady;
-          s.onerror = function(){ document.getElementById('uploader-error').style.display='block'; };
-          document.body.appendChild(s);
-        } else {
-          initWhenReady();
-        }
-      }, 80);
-    })(function startApp(){
+      document.querySelectorAll('select').forEach(sel=>{
+        if (sel.value==="") sel.classList.add('placeholder');
+        sel.addEventListener('change', function(){ this.classList.toggle('placeholder', this.value===""); });
+      });
+    })();
 
-      // --- configuration
-      const SIGNER_BASE = "https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
-      const BUCKET = "maxstache-uploads-2025-mustache-olympics";
-      const REGION = "us-east-2";
-      const LAMBDA_ENDPOINT = "https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/";
+    // Uppy loader
+    const CDN_LIST = [
+      "https://releases.transloadit.com/uppy/v3.9.3/uppy.min.js",
+      "https://cdn.jsdelivr.net/npm/uppy@3.9.3/dist/uppy.min.js",
+      "https://unpkg.com/uppy@3.9.3/dist/uppy.min.js"
+    ];
 
-      const statusDiv = document.getElementById('status');
-      const submitButton = document.getElementById('submit-button');
-      const uploadStatus = document.getElementById('upload-status');
-      function showStatus(msg, type){ statusDiv.className = type; statusDiv.textContent = msg; statusDiv.style.display='block'; }
-      function toPid(email){ return email ? ('PID-' + email.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32)) : 'PID-UNKNOWN'; }
+    function loadScript(src){ return new Promise((res, rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.body.appendChild(s); }); }
+    async function loadUppyFromAnyCDN(){
+      for (const src of CDN_LIST) {
+        try { await loadScript(src); if (window.Uppy) return true; } catch(e) {}
+      }
+      return false;
+    }
 
-      // Email param → display
-      (function initEmail(){
-        const emailDisplayDiv = document.getElementById('email-display');
-        const emailHiddenInput = document.getElementById('email');
-        const params = new URLSearchParams(window.location.search);
-        const emailFromUrl = params.get('email');
-        if (emailFromUrl) {
-          emailHiddenInput.value = emailFromUrl;
-          emailDisplayDiv.innerHTML = `Submitting for: <strong>${emailFromUrl}</strong>`;
-          emailDisplayDiv.style.display = 'block';
-        }
-        document.querySelectorAll('select').forEach(sel=>{
-          if (sel.value==="") sel.classList.add('placeholder');
-          sel.addEventListener('change', function(){ this.classList.toggle('placeholder', this.value===""); });
-        });
-      })();
+    let lastSubmissionId=null, lastS3Key=null;
+    function enableSubmitIfReady(){
+      if (lastSubmissionId) submitButton.disabled = false;
+    }
 
-      // Uppy init
-      let lastSubmissionId=null, lastS3Key=null;
+    async function startUppy(){
+      const ok = await loadUppyFromAnyCDN();
+      if (!ok || !window.Uppy) {
+        // show fallback
+        uploaderError.style.display='block';
+        fallbackUI.style.display='block';
+        initFallbackUploader();
+        return;
+      }
 
       const uppy = new Uppy.Core({
         autoProceed: true,
         restrictions: { maxNumberOfFiles: 1, allowedFileTypes: ['video/*'], maxFileSize: 1024*1024*1024 }
       });
-
-      uppy.use(Uppy.Dashboard, {
-        inline: true, target: '#uppy', height: 360,
-        note: 'Upload a 30s slow-mo video (max 1 GB).',
-        proudlyDisplayPoweredByUppy: false
-      });
-
+      uppy.use(Uppy.Dashboard, { inline:true, target:'#uppy', height:360, note:'Upload a 30s slow-mo video (max 1 GB).', proudlyDisplayPoweredByUppy:false });
       uppy.use(Uppy.AwsS3Multipart, {
         limit: 4,
         createMultipartUpload: async (file) => {
           const email = (document.getElementById('email').value || '').trim();
           const participantId = toPid(email);
           const r = await fetch(`${SIGNER_BASE}/create-mpu`, {
-            method: 'POST', headers: {'content-type':'application/json'},
+            method:'POST', headers:{'content-type':'application/json'},
             body: JSON.stringify({ participantId, filename: file.name || 'video.mp4', mimeType: file.type || 'video/mp4' })
           });
           if (!r.ok) throw new Error('Could not start upload');
           const { uploadId, key, submissionId } = await r.json();
           uppy.setFileMeta(file.id, { submissionId, s3Key: key });
-          lastSubmissionId = submissionId; lastS3Key = key;
-          uploadStatus.textContent = `Starting upload… Submission ID: ${submissionId}`;
+          lastSubmissionId=submissionId; lastS3Key=key; uploadStatus.textContent=`Starting upload… Submission ID: ${submissionId}`;
           return { uploadId, key };
         },
         signPart: async (file, { key, uploadId, partNumber }) => {
           const r = await fetch(`${SIGNER_BASE}/sign-part`, {
-            method: 'POST', headers: {'content-type':'application/json'},
+            method:'POST', headers:{'content-type':'application/json'},
             body: JSON.stringify({ key, uploadId, partNumber })
           });
           if (!r.ok) throw new Error('Could not sign part');
@@ -314,11 +325,11 @@
         },
         completeMultipartUpload: async (file, { key, uploadId, parts }) => {
           const r = await fetch(`${SIGNER_BASE}/complete-mpu`, {
-            method: 'POST', headers: {'content-type':'application/json'},
+            method:'POST', headers:{'content-type':'application/json'},
             body: JSON.stringify({ key, uploadId, parts })
           });
           if (!r.ok) throw new Error('Could not complete upload');
-          await r.json(); // signer updates Dynamo + tags
+          await r.json();
           return { location: `https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}` };
         }
       });
@@ -327,65 +338,109 @@
         const pct = Math.round((progress.bytesUploaded / progress.bytesTotal) * 100);
         uploadStatus.textContent = `Uploading… ${pct}%`;
       });
+      uppy.on('complete', () => { uploadStatus.textContent = `Upload complete. Submission ID: ${lastSubmissionId}`; enableSubmitIfReady(); });
+      uppy.on('error', (err)=>{ showStatus('Upload error: ' + (err && err.message ? err.message : err), 'error'); submitButton.disabled=true; });
+    }
 
-      uppy.on('complete', (res) => {
-        const f = res.successful[0];
-        const sid = f && f.meta && f.meta.submissionId ? f.meta.submissionId : lastSubmissionId;
-        if (sid) { submitButton.disabled = false; uploadStatus.textContent = `Upload complete. Submission ID: ${sid}`; }
+    // Fallback uploader (single-part multipart)
+    function initFallbackUploader(){
+      submitButton.disabled = true;
+      fallbackFile.addEventListener('change', async (e)=>{
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        fallbackMsg.textContent = 'Starting upload…';
+
+        const email = (document.getElementById('email').value || '').trim();
+        const participantId = toPid(email);
+
+        // 1) create
+        const r1 = await fetch(`${SIGNER_BASE}/create-mpu`, {
+          method:'POST', headers:{'content-type':'application/json'},
+          body: JSON.stringify({ participantId, filename: file.name || 'video.mp4', mimeType: file.type || 'video/mp4' })
+        });
+        if (!r1.ok) { fallbackMsg.textContent='Could not start upload.'; return; }
+        const { uploadId, key, submissionId } = await r1.json();
+        lastSubmissionId=submissionId; lastS3Key=key;
+
+        // 2) sign single part
+        const r2 = await fetch(`${SIGNER_BASE}/sign-part`, {
+          method:'POST', headers:{'content-type':'application/json'},
+          body: JSON.stringify({ key, uploadId, partNumber: 1 })
+        });
+        if (!r2.ok) { fallbackMsg.textContent='Could not sign upload.'; return; }
+        const { url } = await r2.json();
+
+        // 3) PUT the file with progress
+        await new Promise((resolve, reject)=>{
+          const xhr = new XMLHttpRequest();
+          xhr.open('PUT', url, true);
+          xhr.upload.onprogress = (ev)=>{ if (ev.lengthComputable) { fallbackProgress.value = Math.round(ev.loaded/ev.total*100); } };
+          xhr.onload = ()=> (xhr.status>=200 && xhr.status<300) ? resolve() : reject(new Error('Upload failed'));
+          xhr.onerror = ()=> reject(new Error('Network error'));
+          xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+          xhr.send(file);
+        });
+
+        // 4) complete
+        const r3 = await fetch(`${SIGNER_BASE}/complete-mpu`, {
+          method:'POST', headers:{'content-type':'application/json'},
+          body: JSON.stringify({ key, uploadId, parts: [{ PartNumber:1, ETag:"dummy" }] }) // ETag ignored by our finalize
+        });
+        if (!r3.ok) { fallbackMsg.textContent='Could not finalize upload.'; return; }
+
+        fallbackMsg.textContent = `Upload complete. Submission ID: ${submissionId}`;
+        enableSubmitIfReady();
       });
+    }
 
-      uppy.on('error', (err) => {
-        submitButton.disabled = true;
-        showStatus('Upload error: ' + (err && err.message ? err.message : err), 'error');
-      });
+    // Start (try Uppy, else fallback)
+    startUppy();
 
-      // Form submit (unchanged except adds submissionId/s3Key)
-      const form = document.getElementById('contest-form');
-      form.addEventListener('submit', async function (event) {
-        event.preventDefault();
-        submitButton.disabled = true; submitButton.innerText = 'Submitting…';
+    // Form submit (same as before, now sends submissionId + s3Key)
+    document.getElementById('contest-form').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      submitButton.disabled = true; submitButton.innerText = 'Submitting…';
 
-        const email = document.getElementById('email').value;
-        if (!email) { showStatus('Email address is missing. Please use the unique link sent to your email.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
-        if (!lastSubmissionId) { showStatus('Please upload your video before submitting the form.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
-        if (!document.getElementById('consents').checked) { showStatus('Please check the consent box to continue.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
+      const email = document.getElementById('email').value;
+      if (!email) { showStatus('Email address is missing. Please use the unique link sent to your email.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
+      if (!lastSubmissionId) { showStatus('Please upload your video before submitting the form.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
+      if (!document.getElementById('consents').checked) { showStatus('Please check the consent box to continue.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
 
-        const payload = {
-          firstName: document.getElementById('firstName').value,
-          lastName:  document.getElementById('lastName').value,
-          email, city: document.getElementById('city').value,
-          state: document.getElementById('state').value,
-          phone: document.getElementById('phone').value,
-          socialPlatform: document.getElementById('socialPlatform')?.value || '',
-          socialHandle:   document.getElementById('socialHandle')?.value || '',
-          eventSource:    document.getElementById('source')?.value || '',
-          stacheDescription: document.getElementById('fullness')?.value || '',
-          stacheStyle:       document.getElementById('generalStyle')?.value || '',
-          stacheFrequency:   document.getElementById('stacheFrequency')?.value || '',
-          talentDescription: document.getElementById('talentDescription')?.value || '',
-          talentOrigin:      document.getElementById('talentOrigin')?.value || '',
-          submissionId: lastSubmissionId,
-          fileUUID:     lastSubmissionId,
-          s3Key:        lastS3Key,
-          marketingConsent: document.getElementById('consents').checked
-        };
+      const payload = {
+        firstName: document.getElementById('firstName').value,
+        lastName:  document.getElementById('lastName').value,
+        email,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        phone: document.getElementById('phone').value || '',
+        socialPlatform: document.getElementById('socialPlatform')?.value || '',
+        socialHandle:   document.getElementById('socialHandle')?.value || '',
+        eventSource:    document.getElementById('source')?.value || '',
+        stacheDescription: document.getElementById('fullness')?.value || '',
+        stacheStyle:       document.getElementById('generalStyle')?.value || '',
+        stacheFrequency:   document.getElementById('stacheFrequency')?.value || '',
+        talentDescription: document.getElementById('talentDescription')?.value || '',
+        talentOrigin:      document.getElementById('talentOrigin')?.value || '',
+        submissionId: lastSubmissionId,
+        fileUUID:     lastSubmissionId,
+        s3Key:        lastS3Key,
+        marketingConsent: document.getElementById('consents').checked
+      };
 
-        try {
-          const resp = await fetch(LAMBDA_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-          if (resp.ok) {
-            showStatus('Success! Your entry has been received. Redirecting now…', 'success');
-            setTimeout(()=>{ window.location.href='https://maxstache.com/pages/thanks-for-your-submission'; }, 3000);
-          } else {
-            const err = await resp.json().catch(()=>({}));
-            showStatus(`Error: ${err.message || 'Could not submit your entry.'}`, 'error');
-            submitButton.disabled=false; submitButton.innerText='Submit My Entry';
-          }
-        } catch (e) {
-          console.error(e);
-          showStatus('A network error occurred. Please try again.', 'error');
+      try {
+        const resp = await fetch(LAMBDA_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        if (resp.ok) {
+          showStatus('Success! Your entry has been received. Redirecting now…', 'success');
+          setTimeout(()=>{ window.location.href='https://maxstache.com/pages/thanks-for-your-submission'; }, 3000);
+        } else {
+          const err = await resp.json().catch(()=>({}));
+          showStatus(`Error: ${err.message || 'Could not submit your entry.'}`, 'error');
           submitButton.disabled=false; submitButton.innerText='Submit My Entry';
         }
-      });
+      } catch (e) {
+        showStatus('A network error occurred. Please try again.', 'error');
+        submitButton.disabled=false; submitButton.innerText='Submit My Entry';
+      }
     });
   </script>
 </body>
