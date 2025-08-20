@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>2025 Mustache Olympics Submission</title>
 
-  <!-- Uppy CSS (primary) -->
-  <link rel="stylesheet" href="https://releases.transloadit.com/uppy/v3.9.3/uppy.min.css" />
+  <!-- Uppy CSS (prefer self-hosted) -->
+  <link rel="stylesheet" href="/vendor/uppy/v3.9.3/uppy.min.css" />
+  <!-- (optional backup CSS CDN if you ever want it) -->
+  <!-- <link rel="stylesheet" href="https://releases.transloadit.com/uppy/v3.9.3/uppy.min.css" /> -->
+
   <link rel="preconnect" href="https://releases.transloadit.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
@@ -226,7 +229,6 @@
 
   <div id="status"></div>
 
-  <!-- Uppy JS loader with multi-CDN fallback -->
   <script>
     const SIGNER_BASE = "https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
     const BUCKET = "maxstache-uploads-2025-mustache-olympics";
@@ -264,8 +266,9 @@
       });
     })();
 
-    // Uppy loader
+    // Prefer self-hosted Uppy, fall back to CDNs if needed
     const CDN_LIST = [
+      "/vendor/uppy/v3.9.3/uppy.min.js",
       "https://releases.transloadit.com/uppy/v3.9.3/uppy.min.js",
       "https://cdn.jsdelivr.net/npm/uppy@3.9.3/dist/uppy.min.js",
       "https://unpkg.com/uppy@3.9.3/dist/uppy.min.js"
@@ -280,9 +283,7 @@
     }
 
     let lastSubmissionId=null, lastS3Key=null;
-    function enableSubmitIfReady(){
-      if (lastSubmissionId) submitButton.disabled = false;
-    }
+    function enableSubmitIfReady(){ if (lastSubmissionId) submitButton.disabled = false; }
 
     async function startUppy(){
       const ok = await loadUppyFromAnyCDN();
@@ -342,7 +343,7 @@
       uppy.on('error', (err)=>{ showStatus('Upload error: ' + (err && err.message ? err.message : err), 'error'); submitButton.disabled=true; });
     }
 
-    // Fallback uploader (single-part multipart)
+    // Fallback uploader (single-part), now captures the real ETag:
     function initFallbackUploader(){
       submitButton.disabled = true;
       fallbackFile.addEventListener('change', async (e)=>{
@@ -370,21 +371,26 @@
         if (!r2.ok) { fallbackMsg.textContent='Could not sign upload.'; return; }
         const { url } = await r2.json();
 
-        // 3) PUT the file with progress
-        await new Promise((resolve, reject)=>{
+        // 3) PUT the file with progress and capture the real ETag
+        const etag = await new Promise((resolve, reject)=>{
           const xhr = new XMLHttpRequest();
           xhr.open('PUT', url, true);
           xhr.upload.onprogress = (ev)=>{ if (ev.lengthComputable) { fallbackProgress.value = Math.round(ev.loaded/ev.total*100); } };
-          xhr.onload = ()=> (xhr.status>=200 && xhr.status<300) ? resolve() : reject(new Error('Upload failed'));
+          xhr.onload = ()=>{
+            if (xhr.status>=200 && xhr.status<300) {
+              const tag = (xhr.getResponseHeader('ETag') || '').replace(/"/g,'');
+              resolve(tag);
+            } else reject(new Error('Upload failed'));
+          };
           xhr.onerror = ()=> reject(new Error('Network error'));
           xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
           xhr.send(file);
         });
 
-        // 4) complete
+        // 4) complete (send the real ETag we captured)
         const r3 = await fetch(`${SIGNER_BASE}/complete-mpu`, {
           method:'POST', headers:{'content-type':'application/json'},
-          body: JSON.stringify({ key, uploadId, parts: [{ PartNumber:1, ETag:"dummy" }] }) // ETag ignored by our finalize
+          body: JSON.stringify({ key, uploadId, parts: [{ PartNumber:1, ETag: etag }] })
         });
         if (!r3.ok) { fallbackMsg.textContent='Could not finalize upload.'; return; }
 
@@ -396,7 +402,7 @@
     // Start (try Uppy, else fallback)
     startUppy();
 
-    // Form submit (same as before, now sends submissionId + s3Key)
+    // Form submit (now sends submissionId + s3Key)
     document.getElementById('contest-form').addEventListener('submit', async function (event) {
       event.preventDefault();
       submitButton.disabled = true; submitButton.innerText = 'Submitting…';
