@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>2025 Mustache Olympics Submission</title>
 
-  <!-- Uppy CSS (prefer self-hosted) -->
-  <link rel="stylesheet" href="/vendor/uppy/v3.9.3/uppy.min.css" />
-  <!-- (optional backup CSS CDN if you ever want it) -->
-  <!-- <link rel="stylesheet" href="https://releases.transloadit.com/uppy/v3.9.3/uppy.min.css" /> -->
-
-  <link rel="preconnect" href="https://releases.transloadit.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <!-- Uppy CSS -->
+  <link rel="stylesheet" href="https://releases.transloadit.com/uppy/v3.9.3/uppy.min.css"/>
 
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 40px auto; padding: 0 20px; }
@@ -21,28 +15,24 @@
     .logo { max-width: 300px; height: auto; display: block; margin: 0 auto; }
     .title-text-container { text-align: left; width: 100%; }
     h1 { color: #111; margin: 0; line-height: 1.2; }
-    p { text-align: left; }
     .social-promo { background-color: #f4f4f4; border-left: 4px solid #7B1E25; padding: 10px 15px; margin: 20px 0; font-size: 0.95em; }
     form { display: flex; flex-direction: column; gap: 20px; text-align: left; }
     label { font-weight: bold; }
     .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
-    input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
-    button[type="submit"] { padding: 12px 20px; background-color: #7B1E25; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.2s; align-self: flex-end; }
+    input[type="text"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
+    button[type="submit"] { padding: 12px 20px; background-color: #7B1E25; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color .2s; align-self: flex-end; }
     button[type="submit"]:hover { background-color: #61181E; }
     button[type="submit"]:disabled { background-color: #ccc; cursor: not-allowed; }
     .consent-group { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
     .consent-group input { margin-top: 5px; }
-    .consent-group label { font-weight: normal; font-size: 0.9em; color: #555; }
     .upload-wrapper { margin-top: 20px; }
     .upload-container { border: 1px solid #ccc; border-radius: 5px; padding: 10px 10px 0; }
     .upload-text { font-weight: bold; margin-bottom: 10px; display: block; }
-    select.placeholder { color: #6c757d; font-size: 0.95em; }
-    #status { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; display: none; }
-    .success { background-color: #d4edda; color: #155724; }
-    .error { background-color: #f8d7da; color: #721c24; }
-    fieldset { border: none; padding: 0; margin: 0; }
-    .main-legend { font-size: 1.2em; font-weight: bold; color: #111; margin-bottom: 15px; padding: 0; width: 100%; }
-    .form-blurb { font-size: 0.9em; color: #555; margin-bottom: 20px; }
+    #uppy { min-height: 360px; }
+    #upload-status { margin-top: 8px; font-size:.95em; color:#555; }
+    #uploader-error { color:#b00020; margin-top:8px; display:none; }
+    #fallback-uploader { display:none; margin-top:10px; }
+    #fallback-progress { width:100%; height:10px; margin-top:8px; }
     .form-section-container { background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-top: 20px; }
     .accordion { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 10px; background-color: #fff; }
     .accordion summary { font-size: 1.1em; font-weight: bold; color: #333; padding: 15px; cursor: pointer; list-style: none; position: relative; }
@@ -51,14 +41,10 @@
     .accordion[open] summary::after { content: '−'; }
     .accordion-content { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 15px; }
     .email-display-container { padding: 10px; background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 15px; }
-    .email-display-container strong { color: #495057; }
-    #uppy { min-height: 260px; }
-    #upload-status { margin-top: 8px; font-size:.95em; color:#555; }
-    #uploader-error { color:#b00020; margin-top:8px; display:none; }
-    /* Fallback uploader */
-    #fallback-uploader { display:none; margin-top:10px; }
-    #fallback-progress { width:100%; height:10px; margin-top:8px; }
-    @media (max-width: 600px) { h1 { font-size: 1.5em; } }
+    .main-legend { font-size: 1.2em; font-weight: bold; color: #111; margin-bottom: 15px; padding: 0; width: 100%; }
+    #status { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; display: none; }
+    .success { background-color: #d4edda; color: #155724; }
+    .error { background-color: #f8d7da; color: #721c24; }
   </style>
 </head>
 <body>
@@ -67,16 +53,14 @@
     <div class="title-text-container"><h1>2025 Mustache Olympics<br>Official Submission Portal</h1></div>
   </div>
 
-  <div class="social-promo">
-    Complete the form below to submit your official entry. Let the games begin!
-  </div>
+  <div class="social-promo">Complete the form below to submit your official entry. Let the games begin!</div>
 
   <form id="contest-form">
     <div class="form-section-container">
       <fieldset>
         <legend class="main-legend">Required Information</legend>
         <div class="email-display-container" id="email-display" style="display:none;"></div>
-        <input type="hidden" id="email" name="email">
+        <input type="hidden" id="email" name="email"/>
 
         <div><label for="firstName">First Name</label><input type="text" id="firstName" name="firstName" required></div>
         <div><label for="lastName">Last Name</label><input type="text" id="lastName" name="lastName" required></div>
@@ -106,7 +90,7 @@
         </div>
 
         <div class="consent-group">
-          <input type="checkbox" id="consents" name="consents" required>
+          <input type="checkbox" id="consents" name="consents" required/>
           <label for="consents">
             By checking this box, I certify that I’m at least 18 years old, consent to receive event updates (including prizes),
             and agree to the <a href="https://maxstache.com/pages/terms-conditions-privacy" target="_blank" rel="noopener noreferrer">Terms, Conditions & Privacy</a> policy.
@@ -119,9 +103,9 @@
           <div id="upload-status"></div>
           <div id="uploader-error">We couldn't load the uploader. Please refresh with cache disabled (Ctrl/Cmd+Shift+R).</div>
 
-          <!-- Fallback uploader (single-part, still uses your signer endpoints) -->
+          <!-- Fallback (simple single-file upload via same signer endpoints) -->
           <div id="fallback-uploader">
-            <input type="file" id="fallback-file" accept="video/*" />
+            <input type="file" id="fallback-file" accept="video/*"/>
             <progress id="fallback-progress" value="0" max="100"></progress>
             <div id="fallback-msg" style="margin-top:8px;color:#555;"></div>
           </div>
@@ -229,12 +213,17 @@
 
   <div id="status"></div>
 
+  <!-- Uppy JS (single, global bundle) -->
+  <script src="https://releases.transloadit.com/uppy/v3.9.3/uppy.min.js"></script>
+
   <script>
+    // ---- Config you already use ----
     const SIGNER_BASE = "https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
     const BUCKET = "maxstache-uploads-2025-mustache-olympics";
     const REGION = "us-east-2";
     const LAMBDA_ENDPOINT = "https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/";
 
+    // ---- Helpers & UI refs ----
     const statusDiv = document.getElementById('status');
     const submitButton = document.getElementById('submit-button');
     const uploadStatus = document.getElementById('upload-status');
@@ -266,87 +255,73 @@
       });
     })();
 
-    // Prefer self-hosted Uppy, fall back to CDNs if needed
-    const CDN_LIST = [
-      "/vendor/uppy/v3.9.3/uppy.min.js",
-      "https://releases.transloadit.com/uppy/v3.9.3/uppy.min.js",
-      "https://cdn.jsdelivr.net/npm/uppy@3.9.3/dist/uppy.min.js",
-      "https://unpkg.com/uppy@3.9.3/dist/uppy.min.js"
-    ];
-
-    function loadScript(src){ return new Promise((res, rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.body.appendChild(s); }); }
-    async function loadUppyFromAnyCDN(){
-      for (const src of CDN_LIST) {
-        try { await loadScript(src); if (window.Uppy) return true; } catch(e) {}
-      }
-      return false;
-    }
-
     let lastSubmissionId=null, lastS3Key=null;
     function enableSubmitIfReady(){ if (lastSubmissionId) submitButton.disabled = false; }
 
-    async function startUppy(){
-      const ok = await loadUppyFromAnyCDN();
-      if (!ok || !window.Uppy) {
-        // show fallback
+    // ---- Start Uppy (no dynamic loader) ----
+    (function startUppy(){
+      try {
+        if (!window.Uppy) throw new Error("Uppy library not loaded");
+        const uppy = new Uppy.Core({
+          autoProceed: true,
+          restrictions: { maxNumberOfFiles: 1, allowedFileTypes: ['video/*'], maxFileSize: 1024*1024*1024 }
+        });
+        uppy.use(Uppy.Dashboard, { inline:true, target:'#uppy', height:360, note:'Upload a 30s slow-mo video (max 1 GB).', proudlyDisplayPoweredByUppy:false });
+        uppy.use(Uppy.AwsS3Multipart, {
+          limit: 4,
+          createMultipartUpload: async (file) => {
+            const email = (document.getElementById('email').value || '').trim();
+            const participantId = toPid(email);
+            const r = await fetch(`${SIGNER_BASE}/create-mpu`, {
+              method:'POST', headers:{'content-type':'application/json'},
+              body: JSON.stringify({ participantId, filename: file.name || 'video.mp4', mimeType: file.type || 'video/mp4' })
+            });
+            if (!r.ok) throw new Error('Could not start upload');
+            const { uploadId, key, submissionId } = await r.json();
+            uppy.setFileMeta(file.id, { submissionId, s3Key: key });
+            lastSubmissionId=submissionId; lastS3Key=key;
+            uploadStatus.textContent=`Starting upload… Submission ID: ${submissionId}`;
+            return { uploadId, key };
+          },
+          signPart: async (file, { key, uploadId, partNumber }) => {
+            const r = await fetch(`${SIGNER_BASE}/sign-part`, {
+              method:'POST', headers:{'content-type':'application/json'},
+              body: JSON.stringify({ key, uploadId, partNumber })
+            });
+            if (!r.ok) throw new Error('Could not sign part');
+            const { url } = await r.json();
+            return { url };
+          },
+          completeMultipartUpload: async (file, { key, uploadId, parts }) => {
+            const r = await fetch(`${SIGNER_BASE}/complete-mpu`, {
+              method:'POST', headers:{'content-type':'application/json'},
+              body: JSON.stringify({ key, uploadId, parts })
+            });
+            if (!r.ok) throw new Error('Could not complete upload');
+            await r.json();
+            return { location: `https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}` };
+          }
+        });
+
+        uppy.on('upload-progress', (file, progress) => {
+          const pct = Math.round((progress.bytesUploaded / progress.bytesTotal) * 100);
+          uploadStatus.textContent = `Uploading… ${pct}%`;
+        });
+        uppy.on('complete', () => { uploadStatus.textContent = `Upload complete. Submission ID: ${lastSubmissionId}`; enableSubmitIfReady(); });
+        uppy.on('error', (err)=>{ showStatus('Upload error: ' + (err?.message || err), 'error'); submitButton.disabled=true; });
+      } catch (e) {
+        // Show fallback
         uploaderError.style.display='block';
         fallbackUI.style.display='block';
         initFallbackUploader();
-        return;
+        console.error(e);
       }
+    })();
 
-      const uppy = new Uppy.Core({
-        autoProceed: true,
-        restrictions: { maxNumberOfFiles: 1, allowedFileTypes: ['video/*'], maxFileSize: 1024*1024*1024 }
-      });
-      uppy.use(Uppy.Dashboard, { inline:true, target:'#uppy', height:360, note:'Upload a 30s slow-mo video (max 1 GB).', proudlyDisplayPoweredByUppy:false });
-      uppy.use(Uppy.AwsS3Multipart, {
-        limit: 4,
-        createMultipartUpload: async (file) => {
-          const email = (document.getElementById('email').value || '').trim();
-          const participantId = toPid(email);
-          const r = await fetch(`${SIGNER_BASE}/create-mpu`, {
-            method:'POST', headers:{'content-type':'application/json'},
-            body: JSON.stringify({ participantId, filename: file.name || 'video.mp4', mimeType: file.type || 'video/mp4' })
-          });
-          if (!r.ok) throw new Error('Could not start upload');
-          const { uploadId, key, submissionId } = await r.json();
-          uppy.setFileMeta(file.id, { submissionId, s3Key: key });
-          lastSubmissionId=submissionId; lastS3Key=key; uploadStatus.textContent=`Starting upload… Submission ID: ${submissionId}`;
-          return { uploadId, key };
-        },
-        signPart: async (file, { key, uploadId, partNumber }) => {
-          const r = await fetch(`${SIGNER_BASE}/sign-part`, {
-            method:'POST', headers:{'content-type':'application/json'},
-            body: JSON.stringify({ key, uploadId, partNumber })
-          });
-          if (!r.ok) throw new Error('Could not sign part');
-          const { url } = await r.json();
-          return { url };
-        },
-        completeMultipartUpload: async (file, { key, uploadId, parts }) => {
-          const r = await fetch(`${SIGNER_BASE}/complete-mpu`, {
-            method:'POST', headers:{'content-type':'application/json'},
-            body: JSON.stringify({ key, uploadId, parts })
-          });
-          if (!r.ok) throw new Error('Could not complete upload');
-          await r.json();
-          return { location: `https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}` };
-        }
-      });
-
-      uppy.on('upload-progress', (file, progress) => {
-        const pct = Math.round((progress.bytesUploaded / progress.bytesTotal) * 100);
-        uploadStatus.textContent = `Uploading… ${pct}%`;
-      });
-      uppy.on('complete', () => { uploadStatus.textContent = `Upload complete. Submission ID: ${lastSubmissionId}`; enableSubmitIfReady(); });
-      uppy.on('error', (err)=>{ showStatus('Upload error: ' + (err && err.message ? err.message : err), 'error'); submitButton.disabled=true; });
-    }
-
-    // Fallback uploader (single-part), now captures the real ETag:
+    // ---- Fallback single-part flow via the same signer endpoints ----
     function initFallbackUploader(){
       submitButton.disabled = true;
-      fallbackFile.addEventListener('change', async (e)=>{
+      fallbackFile?.addEventListener('change', async (e)=>{
         const file = e.target.files && e.target.files[0];
         if (!file) return;
         fallbackMsg.textContent = 'Starting upload…';
@@ -354,7 +329,6 @@
         const email = (document.getElementById('email').value || '').trim();
         const participantId = toPid(email);
 
-        // 1) create
         const r1 = await fetch(`${SIGNER_BASE}/create-mpu`, {
           method:'POST', headers:{'content-type':'application/json'},
           body: JSON.stringify({ participantId, filename: file.name || 'video.mp4', mimeType: file.type || 'video/mp4' })
@@ -363,7 +337,6 @@
         const { uploadId, key, submissionId } = await r1.json();
         lastSubmissionId=submissionId; lastS3Key=key;
 
-        // 2) sign single part
         const r2 = await fetch(`${SIGNER_BASE}/sign-part`, {
           method:'POST', headers:{'content-type':'application/json'},
           body: JSON.stringify({ key, uploadId, partNumber: 1 })
@@ -371,26 +344,19 @@
         if (!r2.ok) { fallbackMsg.textContent='Could not sign upload.'; return; }
         const { url } = await r2.json();
 
-        // 3) PUT the file with progress and capture the real ETag
-        const etag = await new Promise((resolve, reject)=>{
+        await new Promise((resolve, reject)=>{
           const xhr = new XMLHttpRequest();
           xhr.open('PUT', url, true);
-          xhr.upload.onprogress = (ev)=>{ if (ev.lengthComputable) { fallbackProgress.value = Math.round(ev.loaded/ev.total*100); } };
-          xhr.onload = ()=>{
-            if (xhr.status>=200 && xhr.status<300) {
-              const tag = (xhr.getResponseHeader('ETag') || '').replace(/"/g,'');
-              resolve(tag);
-            } else reject(new Error('Upload failed'));
-          };
+          xhr.upload.onprogress = (ev)=>{ if (ev.lengthComputable) fallbackProgress.value = Math.round(ev.loaded/ev.total*100); };
+          xhr.onload = ()=> (xhr.status>=200 && xhr.status<300) ? resolve() : reject(new Error('Upload failed'));
           xhr.onerror = ()=> reject(new Error('Network error'));
           xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
           xhr.send(file);
         });
 
-        // 4) complete (send the real ETag we captured)
         const r3 = await fetch(`${SIGNER_BASE}/complete-mpu`, {
           method:'POST', headers:{'content-type':'application/json'},
-          body: JSON.stringify({ key, uploadId, parts: [{ PartNumber:1, ETag: etag }] })
+          body: JSON.stringify({ key, uploadId, parts: [{ PartNumber:1, ETag:"dummy" }] })
         });
         if (!r3.ok) { fallbackMsg.textContent='Could not finalize upload.'; return; }
 
@@ -399,10 +365,7 @@
       });
     }
 
-    // Start (try Uppy, else fallback)
-    startUppy();
-
-    // Form submit (now sends submissionId + s3Key)
+    // ---- Submit form to your submit Lambda ----
     document.getElementById('contest-form').addEventListener('submit', async function (event) {
       event.preventDefault();
       submitButton.disabled = true; submitButton.innerText = 'Submitting…';
@@ -418,7 +381,7 @@
         email,
         city: document.getElementById('city').value,
         state: document.getElementById('state').value,
-        phone: document.getElementById('phone').value || '',
+        phone: document.getElementById('phone')?.value || '',
         socialPlatform: document.getElementById('socialPlatform')?.value || '',
         socialHandle:   document.getElementById('socialHandle')?.value || '',
         eventSource:    document.getElementById('source')?.value || '',
