@@ -174,39 +174,6 @@
             </div>
           </div>
         </details>
-
-        <details class="accordion">
-          <summary>About You</summary>
-          <div class="accordion-content">
-            <div>
-              <label for="source">How did you learn about the event?</label>
-              <select id="source" name="source">
-                <option value="">select option</option>
-                <option value="Friend or Family">Friend or Family</option>
-                <option value="Social Media">Social Media</option>
-                <option value="Event Card">Event Card</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label for="socialPlatform">Favorite Social Platform</label>
-              <select id="socialPlatform" name="socialPlatform">
-                <option value="">select option</option>
-                <option value="TikTok">TikTok</option><option value="Instagram">Instagram</option>
-                <option value="Facebook">Facebook</option><option value="YouTube">YouTube</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label for="socialHandle">Social Media Handle</label>
-              <input type="text" id="socialHandle" name="socialHandle" placeholder="@yourhandle">
-            </div>
-            <div>
-              <label for="phone">Phone Number <span class="optional-label">(for event updates via text)</span></label>
-              <input type="tel" id="phone" name="phone">
-            </div>
-          </div>
-        </details>
       </fieldset>
     </div>
 
@@ -215,31 +182,28 @@
 
   <div id="status"></div>
 
-  <!-- Self-hosted Uppy JS (must be before the init script). Using defer on both preserves order. -->
-  <script defer src="/uppy.min.js"></script>
+  <!-- Self-hosted Uppy JS (cache-busted) -->
+  <script defer src="/uppy.min.js?v=2"></script>
 
   <!-- Init script -->
   <script defer>
-    // ------- Config you already use -------
     const SIGNER_BASE     = "https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
     const BUCKET          = "maxstache-uploads-2025-mustache-olympics";
     const REGION          = "us-east-2";
     const LAMBDA_ENDPOINT = "https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/";
 
-    const statusDiv      = document.getElementById('status');
-    const submitButton   = document.getElementById('submit-button');
-    const uploadStatus   = document.getElementById('upload-status');
-    const uploaderError  = document.getElementById('uploader-error');
-    const debugEl        = document.getElementById('debug');
+    const statusDiv    = document.getElementById('status');
+    const submitButton = document.getElementById('submit-button');
+    const uploadStatus = document.getElementById('upload-status');
+    const uploaderError= document.getElementById('uploader-error');
+    const debugEl      = document.getElementById('debug');
 
     function showStatus(msg, type){ statusDiv.className = type; statusDiv.textContent = msg; statusDiv.style.display='block'; }
     function debug(msg){ debugEl.style.display='block'; debugEl.textContent += (msg + "\n"); }
     function toPid(email){ return email ? ('PID-' + email.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32)) : 'PID-UNKNOWN'; }
 
-    // Show JS errors on page to speed up troubleshooting
     window.addEventListener('error', (e)=>{ debug("JS error: " + (e.message || e.error)); });
 
-    // Persist email across refreshes
     (function initEmail(){
       const emailDisplayDiv = document.getElementById('email-display');
       const emailHiddenInput = document.getElementById('email');
@@ -261,24 +225,32 @@
     let lastSubmissionId = null, lastS3Key = null;
     function enableSubmitIfReady(){ if (lastSubmissionId) submitButton.disabled = false; }
 
-    // Initialize Uppy after both scripts are parsed (defer) and DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
-      if (!window.Uppy) {
+      const U = window.Uppy;
+      if (!U) {
         uploaderError.style.display='block';
-        debug("Uppy not found on window. Check that /uppy.min.js is served by Netlify.");
+        debug("Uppy global not found. Ensure /uppy.min.js is served.");
+        return;
+      }
+      if (!U.Uppy || !U.Dashboard || !U.AwsS3Multipart) {
+        uploaderError.style.display='block';
+        debug("Uppy global present but missing expected members (Uppy.Uppy / Uppy.Dashboard / Uppy.AwsS3Multipart). Keys: " + Object.keys(U).join(", "));
         return;
       }
 
       debug("Uppy detected, initializing…");
 
-      const uppy = new Uppy.Core({
+      const uppy = new U.Uppy({
         autoProceed: true,
         restrictions: { maxNumberOfFiles: 1, allowedFileTypes: ['video/*'], maxFileSize: 1024*1024*1024 }
       });
 
-      uppy.use(Uppy.Dashboard, { inline:true, target:'#uppy', height:360, note:'Upload a 30s slow-mo video (max 1 GB).', proudlyDisplayPoweredByUppy:false });
+      uppy.use(U.Dashboard, {
+        inline:true, target:'#uppy', height:360,
+        note:'Upload a 30s slow-mo video (max 1 GB).', proudlyDisplayPoweredByUppy:false
+      });
 
-      uppy.use(Uppy.AwsS3Multipart, {
+      uppy.use(U.AwsS3Multipart, {
         limit: 4,
         createMultipartUpload: async (file) => {
           const email = (document.getElementById('email').value || '').trim();
@@ -331,7 +303,6 @@
       });
     });
 
-    // Form submit (unchanged)
     document.getElementById('contest-form').addEventListener('submit', async function (event) {
       event.preventDefault();
       submitButton.disabled = true; submitButton.innerText = 'Submitting…';
