@@ -215,12 +215,11 @@
 
   <div id="status"></div>
 
-  <!-- Self-hosted Uppy JS (must be before the init script). Using defer on both preserves order. -->
+  <!-- Self-hosted Uppy JS -->
   <script defer src="/uppy.min.js"></script>
 
   <!-- Init script -->
   <script defer>
-    // ------- Config you already use -------
     const SIGNER_BASE     = "https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
     const BUCKET          = "maxstache-uploads-2025-mustache-olympics";
     const REGION          = "us-east-2";
@@ -236,10 +235,8 @@
     function debug(msg){ debugEl.style.display='block'; debugEl.textContent += (msg + "\n"); }
     function toPid(email){ return email ? ('PID-' + email.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32)) : 'PID-UNKNOWN'; }
 
-    // Show JS errors on page to speed up troubleshooting
     window.addEventListener('error', (e)=>{ debug("JS error: " + (e.message || e.error)); });
 
-    // Persist email across refreshes
     (function initEmail(){
       const emailDisplayDiv = document.getElementById('email-display');
       const emailHiddenInput = document.getElementById('email');
@@ -261,7 +258,6 @@
     let lastSubmissionId = null, lastS3Key = null;
     function enableSubmitIfReady(){ if (lastSubmissionId) submitButton.disabled = false; }
 
-    // Initialize Uppy after both scripts are parsed (defer) and DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
       if (!window.Uppy) {
         uploaderError.style.display='block';
@@ -271,7 +267,8 @@
 
       debug("Uppy detected, initializing…");
 
-      const uppy = new Uppy.Core({
+      // IMPORTANT: v3 uses `new Uppy()` (not `new Uppy.Core()`)
+      const uppy = new Uppy({
         autoProceed: true,
         restrictions: { maxNumberOfFiles: 1, allowedFileTypes: ['video/*'], maxFileSize: 1024*1024*1024 }
       });
@@ -331,7 +328,6 @@
       });
     });
 
-    // Form submit (unchanged)
     document.getElementById('contest-form').addEventListener('submit', async function (event) {
       event.preventDefault();
       submitButton.disabled = true; submitButton.innerText = 'Submitting…';
