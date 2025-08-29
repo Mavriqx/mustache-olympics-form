@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>2025 Mustache Olympics Submission</title>
+  <title>Enter the 2025 Mustache Olympics</title>
 
   <!-- Self-hosted Uppy CSS -->
   <link rel="stylesheet" href="/uppy.min.css"/>
@@ -11,36 +11,45 @@
   <style>
     :root{
       --border:#e0e0e0;
-      --border-strong:#dee2e6;
+      --border-strong:#ccc;
       --bg:#fff;
       --promo-bg:#f4f4f4;
-      --brand:#7B1E25;
+      --brand:#7B1E25;   /* Burgundy */
+      --brand-dark:#61181E;
       --text:#333;
       --muted:#555;
       --radius:8px;
     }
 
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:var(--text);max-width:640px;margin:40px auto;padding:0 20px}
-    .title-container{display:flex;flex-direction:column;gap:15px;margin-bottom:20px}
+    .title-container{display:flex;flex-direction:column;gap:15px;margin-bottom:8px}
     .logo-container{border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:var(--bg)}
     .logo{max-width:300px;margin:0 auto;display:block}
     h1{color:#111;margin:0;line-height:1.2;text-align:left}
 
-    /* Make the promo bar and email banner visually consistent with inputs */
-    .social-promo,
-    #email-display{
-      border:1px solid var(--border-strong);
-      border-radius:6px;
-      padding:10px 12px;
-      background:#f8f9fa;
+    /* Make promo + email banner look like inputs (same width/border/radius) */
+    .banner-like,
+    input, select {
       width:100%;
       box-sizing:border-box;
+      border:1px solid var(--border-strong);
+      border-radius:6px;
     }
-    .social-promo{border-left:4px solid var(--brand);background:var(--promo-bg);margin:20px 0;font-size:.95em}
+    .social-promo{
+      background:var(--promo-bg);
+      padding:10px 12px;
+      margin:16px 0 20px 0;
+      border-left:4px solid var(--brand);
+    }
+    #email-display{
+      background:#f8f9fa;
+      padding:10px 12px;
+      margin:10px 0 12px 0;
+    }
 
     form{display:flex;flex-direction:column;gap:20px}
     label{font-weight:600}
-    input,select{padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;width:100%}
+    input,select{padding:10px;font-size:16px}
 
     /* Consent: structured card aligned with fields */
     .consent-card{
@@ -48,7 +57,7 @@
       grid-template-columns:auto 1fr;
       gap:12px;
       align-items:start;
-      border:1px solid var(--border);
+      border:1px solid var(--border-strong);
       border-radius:6px;
       background:var(--bg);
       padding:12px;
@@ -57,104 +66,114 @@
     .consent-card label{font-weight:400;color:var(--muted)}
 
     /* Uploader */
-    .upload-wrapper{margin-top:15px}
-    .upload-container{border:1px solid #ccc;border-radius:6px;padding:15px;background:#fff}
+    .upload-wrapper{margin-top:6px}
+    .upload-container{border:1px solid var(--border-strong);border-radius:6px;padding:15px;background:#fff}
     #upload-status{margin-top:10px;font-size:.95em;color:#555}
 
-    /* Hide Uppy “Done” button and item remove action */
-    .uppy-DashboardContent-bar .uppy-DashboardContent-save{display:none !important}
-    .uppy-Dashboard-Item-action--remove{display:none !important}
+    /* Hide Uppy “Done” and item remove in both header + status bar */
+    .uppy-DashboardContent-bar .uppy-DashboardContent-save{display:none !important;}
+    .uppy-StatusBar-actionBtn--done{display:none !important;}
+    .uppy-Dashboard-Item-action--remove{display:none !important;}
 
-    /* Status toasts */
+    /* Status message */
     #status{margin-top:20px;padding:12px;border-radius:6px;text-align:center;display:none}
     .success{background:#d4edda;color:#155724}
     .error{background:#f8d7da;color:#721c24}
 
+    /* Accordions */
     .accordion{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:#fff}
     .accordion summary{font-weight:700;padding:14px;cursor:pointer}
     .accordion-content{padding:0 14px 14px;display:flex;flex-direction:column;gap:14px}
+
+    /* Submit area: right-aligned burgundy button */
+    .actions{display:flex;justify-content:flex-end;margin-top:4px}
+    .btn-primary{
+      background:var(--brand); color:#fff; border:none; border-radius:6px;
+      padding:12px 20px; font-size:16px; cursor:pointer;
+    }
+    .btn-primary:hover{background:var(--brand-dark)}
+    .btn-primary:disabled{background:#bbb; cursor:not-allowed}
   </style>
 </head>
 <body>
   <div class="title-container">
     <div class="logo-container"><img src="Black.png" alt="Mustache Olympics Logo" class="logo"></div>
-    <h1>2025 Mustache Olympics<br>Official Submission Portal</h1>
+    <h1>Enter the 2025 Mustache Olympics</h1>
   </div>
 
-  <div class="social-promo">Complete the form below to submit your official entry. Let the games begin!</div>
+  <div class="social-promo banner-like">Complete the form below to submit your official entry. Let the games begin!</div>
 
   <form id="contest-form">
     <div class="form-section-container">
       <legend class="main-legend">Required Information</legend>
-      <div id="email-display" style="display:none;"></div>
+
+      <div id="email-display" class="banner-like" style="display:none;"></div>
       <input type="hidden" id="email" name="email">
 
       <div><label for="firstName">First Name</label><input type="text" id="firstName" name="firstName" required></div>
       <div><label for="lastName">Last Name</label><input type="text" id="lastName" name="lastName" required></div>
       <div><label for="city">City</label><input type="text" id="city" name="city" required></div>
+
       <div>
         <label for="state">U.S. State or Territory</label>
         <select id="state" name="state" required>
-          <option value="">select option</option>
-<!-- 50 States -->
-<option value="AL">Alabama</option>
-<option value="AK">Alaska</option>
-<option value="AZ">Arizona</option>
-<option value="AR">Arkansas</option>
-<option value="CA">California</option>
-<option value="CO">Colorado</option>
-<option value="CT">Connecticut</option>
-<option value="DE">Delaware</option>
-<option value="FL">Florida</option>
-<option value="GA">Georgia</option>
-<option value="HI">Hawaii</option>
-<option value="ID">Idaho</option>
-<option value="IL">Illinois</option>
-<option value="IN">Indiana</option>
-<option value="IA">Iowa</option>
-<option value="KS">Kansas</option>
-<option value="KY">Kentucky</option>
-<option value="LA">Louisiana</option>
-<option value="ME">Maine</option>
-<option value="MD">Maryland</option>
-<option value="MA">Massachusetts</option>
-<option value="MI">Michigan</option>
-<option value="MN">Minnesota</option>
-<option value="MS">Mississippi</option>
-<option value="MO">Missouri</option>
-<option value="MT">Montana</option>
-<option value="NE">Nebraska</option>
-<option value="NV">Nevada</option>
-<option value="NH">New Hampshire</option>
-<option value="NJ">New Jersey</option>
-<option value="NM">New Mexico</option>
-<option value="NY">New York</option>
-<option value="NC">North Carolina</option>
-<option value="ND">North Dakota</option>
-<option value="OH">Ohio</option>
-<option value="OK">Oklahoma</option>
-<option value="OR">Oregon</option>
-<option value="PA">Pennsylvania</option>
-<option value="RI">Rhode Island</option>
-<option value="SC">South Carolina</option>
-<option value="SD">South Dakota</option>
-<option value="TN">Tennessee</option>
-<option value="TX">Texas</option>
-<option value="UT">Utah</option>
-<option value="VT">Vermont</option>
-<option value="VA">Virginia</option>
-<option value="WA">Washington</option>
-<option value="WV">West Virginia</option>
-<option value="WI">Wisconsin</option>
-<option value="WY">Wyoming</option>
-
-<!-- DC + Territories -->
-<option value="DC">District of Columbia</option>
-<option value="AS">American Samoa</option>
-<option value="GU">Guam</option>
-<option value="MP">Northern Mariana Islands</option>
-<option value="PR">Puerto Rico</option>
-<option value="VI">U.S. Virgin Islands</option>
+          <option value="" disabled selected hidden>Select your state or territory…</option>
+          <option value="AL">Alabama</option>
+          <option value="AK">Alaska</option>
+          <option value="AS">American Samoa</option>
+          <option value="AZ">Arizona</option>
+          <option value="AR">Arkansas</option>
+          <option value="CA">California</option>
+          <option value="CO">Colorado</option>
+          <option value="CT">Connecticut</option>
+          <option value="DE">Delaware</option>
+          <option value="DC">District of Columbia</option>
+          <option value="FL">Florida</option>
+          <option value="GA">Georgia</option>
+          <option value="GU">Guam</option>
+          <option value="HI">Hawaii</option>
+          <option value="ID">Idaho</option>
+          <option value="IL">Illinois</option>
+          <option value="IN">Indiana</option>
+          <option value="IA">Iowa</option>
+          <option value="KS">Kansas</option>
+          <option value="KY">Kentucky</option>
+          <option value="LA">Louisiana</option>
+          <option value="ME">Maine</option>
+          <option value="MD">Maryland</option>
+          <option value="MA">Massachusetts</option>
+          <option value="MI">Michigan</option>
+          <option value="MN">Minnesota</option>
+          <option value="MS">Mississippi</option>
+          <option value="MO">Missouri</option>
+          <option value="MT">Montana</option>
+          <option value="NE">Nebraska</option>
+          <option value="NV">Nevada</option>
+          <option value="NH">New Hampshire</option>
+          <option value="NJ">New Jersey</option>
+          <option value="NM">New Mexico</option>
+          <option value="NY">New York</option>
+          <option value="NC">North Carolina</option>
+          <option value="ND">North Dakota</option>
+          <option value="MP">Northern Mariana Islands</option>
+          <option value="OH">Ohio</option>
+          <option value="OK">Oklahoma</option>
+          <option value="OR">Oregon</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="PR">Puerto Rico</option>
+          <option value="RI">Rhode Island</option>
+          <option value="SC">South Carolina</option>
+          <option value="SD">South Dakota</option>
+          <option value="TN">Tennessee</option>
+          <option value="TX">Texas</option>
+          <option value="UT">Utah</option>
+          <option value="VT">Vermont</option>
+          <option value="VA">Virginia</option>
+          <option value="VI">U.S. Virgin Islands</option>
+          <option value="WA">Washington</option>
+          <option value="WV">West Virginia</option>
+          <option value="WI">Wisconsin</option>
+          <option value="WY">Wyoming</option>
         </select>
       </div>
 
@@ -170,6 +189,9 @@
       <div class="upload-wrapper">
         <label class="upload-text">Upload Your Video</label>
         <div class="upload-container"><div id="uppy"></div></div>
+        <p style="font-size:0.9em;color:#666;margin-top:6px;">
+          Please upload a video up to <strong>30 seconds</strong> (max <strong>1 GB</strong>). MP4/MOV or common video formats.
+        </p>
         <div id="upload-status"></div>
       </div>
     </div>
@@ -235,7 +257,9 @@
       </details>
     </div>
 
-    <button type="submit" id="submit-button" disabled>Submit My Entry</button>
+    <div class="actions">
+      <button type="submit" id="submit-button" class="btn-primary" disabled>Submit My Entry</button>
+    </div>
   </form>
 
   <div id="status"></div>
@@ -364,5 +388,3 @@
   </script>
 </body>
 </html>
-
-
