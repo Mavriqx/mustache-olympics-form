@@ -61,6 +61,7 @@
       border-radius:6px;
       background:var(--bg);
       padding:12px;
+      margin-top:12px;
     }
     .consent-card input[type="checkbox"]{margin-top:4px}
     .consent-card label{font-weight:400;color:var(--muted)}
@@ -181,7 +182,7 @@
       <div class="consent-card">
         <input type="checkbox" id="consents" required>
         <label for="consents">
-          I’m at least 18 and agree to updates and the
+          I’m at least 18 and agree to receive event updates and to the
           <a href="https://maxstache.com/pages/terms-conditions-privacy" target="_blank" rel="noopener">Terms, Conditions &amp; Privacy</a>.
         </label>
       </div>
@@ -190,7 +191,7 @@
         <label class="upload-text">Upload Your Video</label>
         <div class="upload-container"><div id="uppy"></div></div>
         <p style="font-size:0.9em;color:#666;margin-top:6px;">
-          Please upload a video up to <strong>30 seconds</strong> (max <strong>1 GB</strong>). MP4/MOV or common video formats.
+          Please upload a <strong>MP4</strong> or <strong>MOV</strong> video up to <strong>30 seconds</strong> (max <strong>1 GB</strong>).</p>
         </p>
         <div id="upload-status"></div>
       </div>
@@ -294,7 +295,7 @@
       const U=window.Uppy;
       if(!U){showStatus('Upload component failed to load.','error');return;}
 
-      const uppy=new U.Uppy({autoProceed:true,restrictions:{maxNumberOfFiles:1,allowedFileTypes:['video/*'],maxFileSize:1024*1024*1024}});
+      const uppy=new U.Uppy({autoProceed:true,restrictions:{maxNumberOfFiles:1,allowedFileTypes:['video/mp4','video/quicktime'],maxFileSize:1024*1024*1024}});
 
       uppy.use(U.Dashboard,{inline:true,target:'#uppy',height:280,note:'Upload a 30s video (max 1 GB).',proudlyDisplayPoweredByUppy:false});
 
@@ -388,3 +389,4 @@
   </script>
 </body>
 </html>
+
