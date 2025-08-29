@@ -216,68 +216,115 @@ event_id, participant_id, submission_id, content=video, source=direct-s3
 
 ### 3.2 DynamoDB — Submissions Table
 
-- **Name:** `MustacheOlympicsSubmissions`  
-- **Partition key:** `submissionId` (String)  
+- **Table Name:** `MustacheOlympicsSubmissions`
+- **Partition Key (PK):** `submissionId` (String)
 
-**Typical fields:**
-- submissionId (PK)  
-- participantId, eventId, email, firstName, lastName, city, state  
-- s3_key, backup_status (e.g., `ok`), backup_ts (ISO)  
-- Optional: phone, socialPlatform, socialHandle, eventSource, accordion fields  
+**Typical fields**
+- submissionId (PK)
+- participantId, eventId, email, firstName, lastName, city, state
+- s3_key, backup_status (e.g., ok), backup_ts (ISO timestamp)
+- Optional: phone, socialPlatform, socialHandle, eventSource, accordion fields
 
-**Write pattern:**
-- `ConditionExpression: attribute_not_exists(submissionId)`
+**Write pattern**
+```text
+ConditionExpression: attribute_not_exists(submissionId)
+3.3 Lambdas
+A) Signer — maxstache-s3-signer
+Trigger: Lambda Function URL (Auth: NONE; CORS restricted to your origins)
 
----
+Handler: app.handler (Python 3.12)
 
-### 3.3 Lambdas
+Endpoints
 
-#### A) Signer — `maxstache-s3-signer`
-- **Trigger:** Lambda Function URL (Auth: NONE; CORS restricted to allowed origins)  
-- **Handler:** `app.handler` (Python 3.12)  
-- **Endpoints:**
-  - `POST /create-mpu` → `{ uploadId, key, submissionId }`
-  - `POST /sign-part` → `{ url }` (pre-signed PUT for part)
-  - `POST /complete-mpu` → `{ ok: true, location }`
-- **Env:**  
-  - `REGION=us-east-2`  
-  - `BUCKET=maxstache-uploads-2025-mustache-olympics`  
-  - `EVENT_ID=2025-mustache-olympics`  
-  - `ALLOWED_ORIGINS=https://mustache-olympics-submission.netlify.app,https://maxstache.com,https://www.maxstache.com,http://localhost:3000,http://localhost:5173`
-- **IAM (minimum):**  
-  `s3:CreateMultipartUpload, s3:UploadPart, s3:CompleteMultipartUpload, s3:AbortMultipartUpload`  
-  on `arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*`
+POST /create-mpu → { uploadId, key, submissionId }
 
-#### B) Ingest Finalize — `ingest-finalize`
-- **Trigger:** S3 `ObjectCreated` (All) on uploads bucket  
-- **What it does:**
-  - `PutObjectTagging` with final tags  
-  - `UpdateItem` in Dynamo (`backup_status=ok`, `s3_key`, `backup_ts`, `event_id`, `participant_id`)  
-- **Env:** `DDB_TABLE=MustacheOlympicsSubmissions`  
-- **IAM:**  
-  - `dynamodb:UpdateItem` on the table  
-  - `s3:PutObjectTagging` on `arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*`
+POST /sign-part → { url }
 
-#### C) Submit API — `maxstache-submit`
-- **Trigger:** Lambda Function URL (public; CORS restricted to allowed origins)  
-- **Handler:** `lambda_function.lambda_handler` (Python 3.12)  
-- **What it does:**
-  - Parses form payload, ensures `submissionId` present  
-  - `PutItem` to Dynamo with `ConditionExpression attribute_not_exists(submissionId)`  
-- **Env:**  
-  - `REGION=us-east-2`  
-  - `DDB_TABLE=MustacheOlympicsSubmissions`  
-  - `EVENT_ID=2025-mustache-olympics`  
-- **IAM:**  
-  - `dynamodb:PutItem` on the table  
-  - *(Future)*: `sqs:SendMessage`
+POST /complete-mpu → { ok: true, location }
 
----
+Env Vars
 
-### 4) IAM Policies (exact)
+REGION=us-east-2
 
-#### 4.1 Submit API (role policy)
-```json
+BUCKET=maxstache-uploads-2025-mustache-olympics
+
+EVENT_ID=2025-mustache-olympics
+
+ALLOWED_ORIGINS=https://mustache-olympics-submission.netlify.app,https://maxstache.com,https://www.maxstache.com,http://localhost:3000,http://localhost:5173
+
+IAM Minimum
+
+json
+Copy code
+{
+  "Effect": "Allow",
+  "Action": [
+    "s3:CreateMultipartUpload",
+    "s3:UploadPart",
+    "s3:CompleteMultipartUpload",
+    "s3:AbortMultipartUpload"
+  ],
+  "Resource": "arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"
+}
+B) Ingest Finalize — ingest-finalize
+Trigger: S3 ObjectCreated (All) on the uploads bucket.
+
+What it does:
+
+Adds final object tags
+
+Updates Dynamo item with backup_status=ok, s3_key, backup_ts, event_id, participant_id
+
+Env Var
+
+DDB_TABLE=MustacheOlympicsSubmissions
+
+IAM
+
+json
+Copy code
+{
+  "Effect": "Allow",
+  "Action": ["dynamodb:UpdateItem"],
+  "Resource": "arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
+},
+{
+  "Effect": "Allow",
+  "Action": ["s3:PutObjectTagging"],
+  "Resource": "arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"
+}
+C) Submit API — maxstache-submit
+Trigger: Lambda Function URL (public; CORS restricted to your origins)
+
+Handler: lambda_function.lambda_handler (Python 3.12)
+
+What it does
+
+Parses form payload; ensures submissionId present
+
+Writes to Dynamo with attribute_not_exists(submissionId)
+
+Env Vars
+
+REGION=us-east-2
+
+DDB_TABLE=MustacheOlympicsSubmissions
+
+EVENT_ID=2025-mustache-olympics
+
+IAM
+
+json
+Copy code
+{
+  "Effect": "Allow",
+  "Action": ["dynamodb:PutItem"],
+  "Resource": "arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
+}
+4) IAM Policies (exact)
+4.1 Submit API Role
+json
+Copy code
 {
   "Version":"2012-10-17",
   "Statement":[
@@ -288,7 +335,7 @@ event_id, participant_id, submission_id, content=video, source=direct-s3
     }
   ]
 }
-4.2 Signer (role policy)
+4.2 Signer Role
 json
 Copy code
 {
@@ -306,12 +353,12 @@ Copy code
     }
   ]
 }
-4.3 Ingest Finalize (role policy)
+4.3 Ingest Finalize Role
 json
 Copy code
 {
-  "Version":"2012-10-17",
-  "Statement":[
+  "Version": "2012-10-17",
+  "Statement": [
     {
       "Effect":"Allow",
       "Action":["dynamodb:UpdateItem"],
@@ -325,45 +372,54 @@ Copy code
   ]
 }
 5) CORS & Security
-Function URLs (Signer, Submit):
+Function URLs (Signer, Submit)
 
-Allow origins: https://mustache-olympics-submission.netlify.app, https://maxstache.com, https://www.maxstache.com, http://localhost:3000, http://localhost:5173
+Allowed origins:
 
-Allow headers: content-type
+https://mustache-olympics-submission.netlify.app
 
-Allow methods: OPTIONS, POST
+https://maxstache.com
 
-S3:
+https://www.maxstache.com
 
-CORS restricted to allowed origins
+http://localhost:3000
 
-Block Public Access = Enabled
+http://localhost:5173
 
-Versioning = On
+Allowed headers: content-type
 
-6) Validation
-Client-side:
+Allowed methods: OPTIONS, POST
 
-Uppy restricts to .mp4 / .mov and ≤ 1 GB
+S3 CORS set to the same origins.
+
+Block Public Access: ON.
+
+Versioning: ON.
+
+6) Client-Side Validation
+Uppy restricts file types: .mp4, .mov
+
+Max file size: 1 GB
 
 Consent checkbox required
 
-Server-side:
+7) Server-Side Validation
+Submit API enforces submissionId uniqueness (attribute_not_exists).
 
-Submit API is idempotent on submissionId
+Ingest Finalize only tags items matching naming convention.
 
-Ingest Finalize only tags/updates items matching key convention
+MIME type validation still mandatory.
 
-(Future): API Gateway + WAF in front of Function URLs
+8) Data Model (DynamoDB)
+Partition key
 
-7) Data Model (DynamoDB)
-Partition key: submissionId (UUID)
+submissionId (String UUID; same as from create-mpu)
 
-Common attributes:
+Attributes
 
-submissionId
+submissionId (PK)
 
-participantId (derived from email)
+participantId (from email)
 
 eventId (default: 2025-mustache-olympics)
 
@@ -371,63 +427,60 @@ email, firstName, lastName, city, state
 
 s3_key
 
-backup_status (e.g., ok, source_missing)
+backup_status (ok, missing)
 
-backup_ts (ISO timestamp)
+backup_ts (ISO)
 
-Optional: phone, socialPlatform, socialHandle, eventSource, accordion fields
+Optional: phone, socialPlatform, socialHandle, eventSource, accordion answers
 
-8) Testing Playbook (manual)
-Before starting:
+9) Testing Playbook
+Before starting
 
-Confirm Function URLs show correct CORS in AWS console.
+Confirm Function URLs show correct CORS.
 
-Confirm S3 CORS includes Netlify origin(s).
+Confirm S3 bucket CORS includes Netlify origins.
 
-End-to-end smoke test:
+Smoke test
 
-Open submission page with ?email=your@email.
+Open submission page with ?email=test@example.com
 
-Pick a .mp4 or .mov (~20–50 MB test).
+Upload .mp4 or .mov (20–50 MB for quick test).
 
 Watch progress bar → confirm “Upload complete”.
 
-Click Submit → redirect to thank-you page.
+Submit → should redirect to thank-you page.
 
-In AWS:
+Check AWS
 
-S3: object with correct tags.
+S3: Object at canonical key with tags
 
-Dynamo: item with submissionId + backup_status=ok.
+DynamoDB: Item with submissionId + backup_status=ok
 
-CloudWatch: no errors in ingest-finalize, maxstache-submit, maxstache-s3-signer.
+CloudWatch: No errors in ingest-finalize, maxstache-submit, maxstache-s3-signer
 
-Troubleshooting:
+10) Future Enhancements (backlog)
+API Gateway + WAF in front of signer/submit
 
-Duplicate submit → check Dynamo item by submissionId.
+S3 Lifecycle: abort incomplete MPUs (1d), delete raw after 120d
 
-Upload stalls → check Uppy network tab, signer endpoints 200.
+CloudWatch dashboards/alarms (errors, throttles, SQS backlog if added)
 
-Missing tags → check S3 event notification → ingest-finalize.
+Captcha (Turnstile/reCAPTCHA) on submit
 
-9) Future Enhancements (backlog)
-API Gateway + WAF in front of signer/submit (rate limits, bot rules)
+SES email receipts with submissionId
 
-S3 Lifecycle: abort incomplete MPUs (1d), expire raw (120d)
+Optional: S3→SQS→Lambda pipeline for extreme scale
 
-CloudWatch dashboards/alarms (5xx, throttles, SQS backlog if added)
-
-Captcha on submit; HMAC’d invite links; SES email receipts
-
-Optional: S3 → SQS → Lambda pattern
-
-10) Quick Reference
+🔑 Quick Reference
 Bucket: maxstache-uploads-2025-mustache-olympics (us-east-2)
 
-Dynamo Table: MustacheOlympicsSubmissions
+Table: MustacheOlympicsSubmissions
 
 Event ID: 2025-mustache-olympics
 
 Signer URL: https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws
 
 Submit URL: https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/
+
+yaml
+Copy code
