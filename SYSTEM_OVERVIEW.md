@@ -102,6 +102,110 @@ _Last updated: 2025-08-29 • Owner: Mav • Event ID: `2025-mustache-olympics`_
       "MaxAgeSeconds": 3000
     }
   ]
+# Mustache Olympics — System Overview
+_Last updated: 2025-08-29 • Owner: Mav • Event ID: `2025-mustache-olympics`_
+
+> **Purpose:** One doc that explains how the submission system works end-to-end (website → S3 → DynamoDB → Lambdas), with all critical configs, policies, testing steps, and what to change later if we scale.
+
+---
+
+## 0) TL;DR (What exists today)
+
+- **Frontend (Netlify)**: Single submission page (`index.html`) using **Uppy** (direct-to-S3 via multipart).  
+  - Allowed video formats: **MP4, MOV**; Max size: **1 GB**; Progress + single file.
+  - Submit button unlocks **only after** upload completes.
+
+- **Storage (S3)**: `maxstache-uploads-2025-mustache-olympics` (Region **us-east-2**).  
+  - Key format: `event={event_id}/participant_id={participant_id}/submission_id={submission_id}/video.mp4`  
+  - Object tags: `event_id`, `participant_id`, `submission_id`, `content=video`, `source=direct-s3`
+
+- **Database (DynamoDB)**: `MustacheOlympicsSubmissions`  
+  - PK: `submissionId` (ISO string UUID)  
+  - Stores ingest status + form fields. Idempotent writes.
+
+- **Lambdas**  
+  1) **Signer** (`maxstache-s3-signer`, Function URL) → `/create-mpu`, `/sign-part`, `/complete-mpu`  
+  2) **Ingest Finalize** (`ingest-finalize`, S3 ObjectCreated) → tags object + updates Dynamo  
+  3) **Submit API** (`maxstache-submit`, Function URL) → writes final record
+
+- **CORS**: Restricted to Netlify site + `maxstache.com` and `www.maxstache.com` (+ localhost dev).
+
+---
+
+## 1) User Journey
+
+1) **Registration (main website)**  
+   - User lands on a page that emails them a unique link to the submission portal with `?email=<addr>`.
+   - On load, the portal reads the email from the URL (or `localStorage`) and shows **“Submitting for: <email>”**.
+
+2) **Upload (browser → S3 directly)**  
+   - User selects a **.mp4/.mov ≤ 1 GB**.  
+   - Uppy asks the **Signer Lambda** to:
+     - `POST /create-mpu` → returns `{uploadId, key, submissionId}`  
+     - `POST /sign-part` for each chunk  
+     - `POST /complete-mpu` after all parts  
+   - On success, the file exists at the canonical **S3 key** above.
+
+3) **Ingest Finalize (S3 event)**  
+   - S3 `ObjectCreated` → **Ingest Finalize Lambda** fires:  
+     - Adds tags (`event_id`, `participant_id`, `submission_id`, `content=video`, `source=direct-s3`)  
+     - `UpdateItem` in Dynamo: `backup_status=ok`, `s3_key`, `backup_ts`
+
+4) **Submit (form → Submit API)**  
+   - The page enables **Submit** only after upload completes.  
+   - The payload (user fields + `submissionId` + `s3Key`) is posted to the **Submit Lambda**.  
+   - Dynamo record is upserted **idempotently** (one item per `submissionId`).  
+   - User is redirected to the thank-you page.
+
+> **Note:** Legacy Uploadcare path is retired/disabled.
+
+---
+
+## 2) Frontend (Netlify)
+
+- **Repo**: `mustache-olympics-form`  
+  - `index.html` (submission page)  
+  - `uppy.min.js`, `uppy.min.css` (self-hosted Uppy v3)  
+  - `Black.png` (logo) and any icons
+
+- **Key UI rules**  
+  - Title: **“Enter the 2025 Mustache Olympics”**  
+  - “Required Information” + “Optional Information” sections, styled.  
+  - **Uploader**: inline Dashboard; **180px** height; **“Done”** button hidden; single progress bar; remove (X) enabled.  
+  - Allowed files: **`video/mp4`, `video/quicktime`** only.  
+  - Submit button: **burgundy, right-aligned**, disabled until upload completes.
+
+- **Constants embedded in `index.html`**  
+  - `SIGNER_BASE = https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws`  
+  - `LAMBDA_ENDPOINT = https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/`  
+  - `BUCKET = maxstache-uploads-2025-mustache-olympics`  
+  - `REGION = us-east-2`
+
+---
+
+## 3) AWS Inventory (production)
+
+### 3.1 S3 — Uploads Bucket
+- **Name**: `maxstache-uploads-2025-mustache-olympics` (Region: **us-east-2**)
+- **Public access**: Blocked  
+- **Versioning**: ON  
+- **CORS** (bucket-level):
+  ```json
+  [
+    {
+      "AllowedOrigins": [
+        "https://maxstache.com",
+        "https://www.maxstache.com",
+        "https://mustache-olympics-submission.netlify.app",
+        "http://localhost:3000",
+        "http://localhost:5173"
+      ],
+      "AllowedMethods": ["POST","PUT","GET","HEAD"],
+      "AllowedHeaders": ["*"],
+      "ExposeHeaders": ["ETag","Location"],
+      "MaxAgeSeconds": 3000
+    }
+  ]
 Object key convention:
 event={event_id}/participant_id={participant_id}/submission_id={submission_id}/video.mp4
 
@@ -348,6 +452,3 @@ Event ID: 2025-mustache-olympics
 Signer URL: https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws
 
 Submit URL: https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/
-
-yaml
-Copy code
