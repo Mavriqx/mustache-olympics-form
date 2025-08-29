@@ -206,14 +206,6 @@ _Last updated: 2025-08-29 • Owner: Mav • Event ID: `2025-mustache-olympics`_
       "MaxAgeSeconds": 3000
     }
   ]
-Object key convention:
-event={event_id}/participant_id={participant_id}/submission_id={submission_id}/video.mp4
-
-Object tags (finalized):
-event_id, participant_id, submission_id, content=video, source=direct-s3
-
-(Optional later) Lifecycle rules: abort stale MPU after 1 day; expire raw after 120 days.
-
 ### 3.2 DynamoDB — Submissions Table
 
 - **Table Name:** `MustacheOlympicsSubmissions`
@@ -252,7 +244,7 @@ EVENT_ID=2025-mustache-olympics
 
 ALLOWED_ORIGINS=https://mustache-olympics-submission.netlify.app,https://maxstache.com,https://www.maxstache.com,http://localhost:3000,http://localhost:5173
 
-IAM Minimum
+IAM
 
 json
 Copy code
@@ -267,15 +259,11 @@ Copy code
   "Resource": "arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"
 }
 B) Ingest Finalize — ingest-finalize
-Trigger: S3 ObjectCreated (All) on the uploads bucket.
+Trigger: S3 ObjectCreated (All)
 
-What it does:
+Purpose: Add final object tags + update DynamoDB
 
-Adds final object tags
-
-Updates Dynamo item with backup_status=ok, s3_key, backup_ts, event_id, participant_id
-
-Env Var
+Env
 
 DDB_TABLE=MustacheOlympicsSubmissions
 
@@ -284,27 +272,27 @@ IAM
 json
 Copy code
 {
-  "Effect": "Allow",
-  "Action": ["dynamodb:UpdateItem"],
-  "Resource": "arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
+  "Effect":"Allow",
+  "Action":["dynamodb:UpdateItem"],
+  "Resource":"arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
 },
 {
-  "Effect": "Allow",
-  "Action": ["s3:PutObjectTagging"],
-  "Resource": "arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"
+  "Effect":"Allow",
+  "Action":["s3:PutObjectTagging"],
+  "Resource":"arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"
 }
 C) Submit API — maxstache-submit
-Trigger: Lambda Function URL (public; CORS restricted to your origins)
+Trigger: Lambda Function URL (public; CORS restricted)
 
 Handler: lambda_function.lambda_handler (Python 3.12)
 
-What it does
+Actions
 
-Parses form payload; ensures submissionId present
+Parses payload, ensures submissionId present
 
-Writes to Dynamo with attribute_not_exists(submissionId)
+Writes to DynamoDB with conditional put
 
-Env Vars
+Env
 
 REGION=us-east-2
 
@@ -317,161 +305,89 @@ IAM
 json
 Copy code
 {
-  "Effect": "Allow",
-  "Action": ["dynamodb:PutItem"],
-  "Resource": "arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
+  "Effect":"Allow",
+  "Action":["dynamodb:PutItem"],
+  "Resource":"arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
 }
-4) IAM Policies (exact)
-4.1 Submit API Role
+4) IAM Policies (Exact)
+Submit API
 json
 Copy code
-{
-  "Version":"2012-10-17",
+{ "Version":"2012-10-17",
   "Statement":[
-    {
-      "Effect":"Allow",
-      "Action":["dynamodb:PutItem"],
-      "Resource":"arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
-    }
+    {"Effect":"Allow","Action":["dynamodb:PutItem"],"Resource":"arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"}
   ]
 }
-4.2 Signer Role
+Signer
 json
 Copy code
-{
-  "Version":"2012-10-17",
+{ "Version":"2012-10-17",
   "Statement":[
-    {
-      "Effect":"Allow",
-      "Action":[
-        "s3:CreateMultipartUpload",
-        "s3:UploadPart",
-        "s3:CompleteMultipartUpload",
-        "s3:AbortMultipartUpload"
-      ],
-      "Resource":"arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"
-    }
+    {"Effect":"Allow","Action":[
+      "s3:CreateMultipartUpload","s3:UploadPart","s3:CompleteMultipartUpload","s3:AbortMultipartUpload"
+    ],"Resource":"arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"}
   ]
 }
-4.3 Ingest Finalize Role
+Ingest Finalize
 json
 Copy code
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect":"Allow",
-      "Action":["dynamodb:UpdateItem"],
-      "Resource":"arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"
-    },
-    {
-      "Effect":"Allow",
-      "Action":["s3:PutObjectTagging"],
-      "Resource":"arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"
-    }
+{ "Version":"2012-10-17",
+  "Statement":[
+    {"Effect":"Allow","Action":["dynamodb:UpdateItem"],"Resource":"arn:aws:dynamodb:us-east-2:760474663439:table/MustacheOlympicsSubmissions"},
+    {"Effect":"Allow","Action":["s3:PutObjectTagging"],"Resource":"arn:aws:s3:::maxstache-uploads-2025-mustache-olympics/*"}
   ]
 }
 5) CORS & Security
-Function URLs (Signer, Submit)
-
-Allowed origins:
-
-https://mustache-olympics-submission.netlify.app
-
-https://maxstache.com
-
-https://www.maxstache.com
-
-http://localhost:3000
-
-http://localhost:5173
+Allowed origins: Netlify app, maxstache.com (root & www), localhost:3000/5173
 
 Allowed headers: content-type
 
-Allowed methods: OPTIONS, POST
+Methods: OPTIONS, POST
 
-S3 CORS set to the same origins.
-
-Block Public Access: ON.
-
-Versioning: ON.
+S3: CORS matches above origins, Public Access Blocked, Versioning ON
 
 6) Client-Side Validation
-Uppy restricts file types: .mp4, .mov
+MP4/MOV only
 
-Max file size: 1 GB
+Max 1 GB
 
 Consent checkbox required
 
 7) Server-Side Validation
-Submit API enforces submissionId uniqueness (attribute_not_exists).
+attribute_not_exists(submissionId)
 
-Ingest Finalize only tags items matching naming convention.
+S3 object tagging enforces key structure
 
-MIME type validation still mandatory.
+MIME validation required
 
-8) Data Model (DynamoDB)
-Partition key
+8) DynamoDB Data Model
+PK: submissionId
 
-submissionId (String UUID; same as from create-mpu)
+Attributes: participantId, eventId, email, firstName, lastName, city, state
 
-Attributes
+s3_key, backup_status, backup_ts
 
-submissionId (PK)
-
-participantId (from email)
-
-eventId (default: 2025-mustache-olympics)
-
-email, firstName, lastName, city, state
-
-s3_key
-
-backup_status (ok, missing)
-
-backup_ts (ISO)
-
-Optional: phone, socialPlatform, socialHandle, eventSource, accordion answers
+Optional: phone, social info, accordion answers
 
 9) Testing Playbook
-Before starting
+Smoke test with ?email= param
 
-Confirm Function URLs show correct CORS.
+Upload video → confirm “Upload complete”
 
-Confirm S3 bucket CORS includes Netlify origins.
+Submit → check redirect
 
-Smoke test
+AWS check: S3 object with tags + Dynamo item written
 
-Open submission page with ?email=test@example.com
+10) Future Enhancements
+API GW + WAF
 
-Upload .mp4 or .mov (20–50 MB for quick test).
+S3 lifecycle (abort MPUs 1d, delete raw 120d)
 
-Watch progress bar → confirm “Upload complete”.
+Captcha on submit, SES receipts
 
-Submit → should redirect to thank-you page.
+Optional S3→SQS→Lambda
 
-Check AWS
-
-S3: Object at canonical key with tags
-
-DynamoDB: Item with submissionId + backup_status=ok
-
-CloudWatch: No errors in ingest-finalize, maxstache-submit, maxstache-s3-signer
-
-10) Future Enhancements (backlog)
-API Gateway + WAF in front of signer/submit
-
-S3 Lifecycle: abort incomplete MPUs (1d), delete raw after 120d
-
-CloudWatch dashboards/alarms (errors, throttles, SQS backlog if added)
-
-Captcha (Turnstile/reCAPTCHA) on submit
-
-SES email receipts with submissionId
-
-Optional: S3→SQS→Lambda pipeline for extreme scale
-
-🔑 Quick Reference
+Quick Reference
 Bucket: maxstache-uploads-2025-mustache-olympics (us-east-2)
 
 Table: MustacheOlympicsSubmissions
@@ -481,6 +397,3 @@ Event ID: 2025-mustache-olympics
 Signer URL: https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws
 
 Submit URL: https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/
-
-yaml
-Copy code
