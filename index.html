@@ -74,7 +74,7 @@
     /* Hide Uppy “Done” and item remove in both header + status bar */
     .uppy-DashboardContent-bar .uppy-DashboardContent-save{display:none !important;}
     .uppy-StatusBar-actionBtn--done{display:none !important;}
-    .uppy-Dashboard-Item-action--remove{display:none !important;}
+    /* .uppy-Dashboard-Item-action--remove{display:none !important;} */
 
     /* Status message */
     #status{margin-top:20px;padding:12px;border-radius:6px;text-align:center;display:none}
@@ -297,7 +297,8 @@
 
       const uppy=new U.Uppy({autoProceed:true,restrictions:{maxNumberOfFiles:1,allowedFileTypes:['video/mp4','video/quicktime'],maxFileSize:1024*1024*1024}});
 
-      uppy.use(U.Dashboard,{inline:true,target:'#uppy',height:280,note:'Upload a 30s video (max 1 GB).',proudlyDisplayPoweredByUppy:false});
+      uppy.use(U.Dashboard,{inline:true,target:'#uppy',height:180,note:'Upload a MP4 or MOV video (max 1 GB).',proudlyDisplayPoweredByUppy:false,showProgressDetails:true,hideUploadButton:true,hideRetryButton:true,hidePauseResumeButton:true});
+
 
       uppy.use(U.AwsS3Multipart,{limit:4,
         createMultipartUpload:async(file)=>{
@@ -389,5 +390,6 @@
   </script>
 </body>
 </html>
+
 
 
