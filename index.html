@@ -80,10 +80,41 @@
     .success{background:#d4edda;color:#155724}
     .error{background:#f8d7da;color:#721c24}
 
+    /* Section headers */
+    .main-legend {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 6px;
+      display: block;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 4px;
+    }
+    .section-subtitle {
+      font-size: 0.9em;
+      color: var(--muted);
+      margin: 4px 0 12px;
+      font-style: italic;
+    }
+    
     /* Accordions */
-    .accordion{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:#fff}
-    .accordion summary{font-weight:700;padding:14px;cursor:pointer}
-    .accordion-content{padding:0 14px 14px;display:flex;flex-direction:column;gap:14px}
+    .accordion {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .accordion summary {
+      font-weight: 700;
+      padding: 14px;
+      cursor: pointer;
+    }
+    .accordion-content {
+      padding: 0 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
     /* Submit area: right-aligned burgundy button */
     .actions{display:flex;justify-content:flex-end;margin-top:4px}
@@ -198,6 +229,7 @@
 
     <div class="form-section-container">
       <legend class="main-legend">Optional Information</legend>
+      <p class="section-subtitle">Sharing a little more helps us plan an even bigger and better Mustache Olympics next year!</p>
 
       <details class="accordion">
         <summary>About Your Talent</summary>
@@ -389,6 +421,7 @@
   </script>
 </body>
 </html>
+
 
 
 
