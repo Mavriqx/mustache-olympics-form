@@ -1,180 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>2025 Mustache Olympics Submission</title>
 
   <!-- Self-hosted Uppy CSS -->
-  <link rel="stylesheet" href="/uppy.min.css" />
+  <link rel="stylesheet" href="/uppy.min.css"/>
 
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 40px auto; padding: 0 20px; }
-    .title-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-    .logo-container { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fff; width: 100%; box-sizing: border-box; }
-    .logo { max-width: 300px; height: auto; display: block; margin: 0 auto; }
-    .title-text-container { text-align: left; width: 100%; }
-    h1 { color: #111; margin: 0; line-height: 1.2; }
-    p { text-align: left; }
-    .social-promo { background-color: #f4f4f4; border-left: 4px solid #7B1E25; padding: 10px 15px; margin: 20px 0; font-size: 0.95em; }
-    form { display: flex; flex-direction: column; gap: 20px; text-align: left; }
-    label { font-weight: bold; }
-    .optional-label { font-weight: normal; font-style: italic; color: #666; font-size: 0.9em; margin-left: 5px; }
-    input[type="text"], input[type="email"], input[type="tel"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; width: 100%; box-sizing: border-box; }
-    button[type="submit"] { padding: 12px 20px; background-color: #7B1E25; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.2s; align-self: flex-end; }
-    button[type="submit"]:hover { background-color: #61181E; }
-    button[type="submit"]:disabled { background-color: #ccc; cursor: not-allowed; }
-    .consent-group { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
-    .consent-group input { margin-top: 5px; }
-    .consent-group label { font-weight: normal; font-size: 0.9em; color: #555; }
-    .upload-wrapper { margin-top: 20px; }
-    .upload-container { border: 1px solid #ccc; border-radius: 5px; padding: 10px 10px 0; }
-    .upload-text { font-weight: bold; margin-bottom: 10px; display: block; }
-    select.placeholder { color: #6c757d; font-size: 0.95em; }
-    #status { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; display: none; }
-    .success { background-color: #d4edda; color: #155724; }
-    .error { background-color: #f8d7da; color: #721c24; }
-    fieldset { border: none; padding: 0; margin: 0; }
-    .main-legend { font-size: 1.2em; font-weight: bold; color: #111; margin-bottom: 15px; padding: 0; width: 100%; }
-    .form-blurb { font-size: 0.9em; color: #555; margin-bottom: 20px; }
-    .form-section-container { background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-top: 20px; }
-    .accordion { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 10px; background-color: #fff; }
-    .accordion summary { font-size: 1.1em; font-weight: bold; color: #333; padding: 15px; cursor: pointer; list-style: none; position: relative; }
-    .accordion summary::-webkit-details-marker { display: none; }
-    .accordion summary::after { content: '+'; position: absolute; right: 20px; font-size: 1.4em; line-height: 1; }
-    .accordion[open] summary::after { content: '−'; }
-    .accordion-content { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 15px; }
-    .email-display-container { padding: 10px; background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 15px; }
-    .email-display-container strong { color: #495057; }
-    #uppy { min-height: 260px; }
-    #upload-status { margin-top: 8px; font-size:.95em; color:#555; }
-    #uploader-error { color:#b00020; margin-top:8px; display:none; }
-    #debug { white-space:pre-wrap; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:.9em; color:#444; background:#f7f7f7; padding:8px; border-radius:6px; display:none; }
-    @media (max-width: 600px) { h1 { font-size: 1.5em; } }
+    body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.6; color:#333; max-width:640px; margin:40px auto; padding:0 20px; }
+    .title-container { display:flex; flex-direction:column; gap:15px; margin-bottom:20px; }
+    .logo-container { border:1px solid #e0e0e0; border-radius:8px; padding:20px; background:#fff; }
+    .logo { max-width:300px; margin:0 auto; display:block; }
+    h1 { color:#111; margin:0; line-height:1.2; text-align:left; }
+    .social-promo { background:#f4f4f4; border-left:4px solid #7B1E25; padding:10px 15px; margin:20px 0; font-size:.95em; }
+    form { display:flex; flex-direction:column; gap:20px; }
+    label { font-weight:600; }
+    input,select { padding:10px; border:1px solid #ccc; border-radius:5px; font-size:16px; width:100%; }
+    button[type=submit] { padding:12px 20px; background:#7B1E25; color:#fff; border:none; border-radius:5px; font-size:16px; cursor:pointer; }
+    button[type=submit]:disabled { background:#bbb; cursor:not-allowed; }
+    .consent-group { display:flex; gap:10px; align-items:flex-start; }
+    .upload-wrapper { margin-top:15px; }
+    .upload-container { border:1px solid #ccc; border-radius:6px; padding:15px; background:#fff; }
+    #upload-status { margin-top:10px; font-size:.95em; color:#555; }
+    #status { margin-top:20px; padding:12px; border-radius:6px; text-align:center; display:none; }
+    .success { background:#d4edda; color:#155724; }
+    .error { background:#f8d7da; color:#721c24; }
+    .accordion { border:1px solid #e0e0e0; border-radius:8px; margin-bottom:10px; background:#fff; }
+    .accordion summary { font-weight:700; padding:14px; cursor:pointer; }
+    .accordion-content { padding:0 14px 14px; display:flex; flex-direction:column; gap:14px; }
   </style>
 </head>
 <body>
   <div class="title-container">
     <div class="logo-container"><img src="Black.png" alt="Mustache Olympics Logo" class="logo"></div>
-    <div class="title-text-container"><h1>2025 Mustache Olympics<br>Official Submission Portal</h1></div>
+    <h1>2025 Mustache Olympics<br>Official Submission Portal</h1>
   </div>
 
-  <div class="social-promo">
-    Complete the form below to submit your official entry. Let the games begin!
-  </div>
+  <div class="social-promo">Complete the form below to submit your official entry. Let the games begin!</div>
 
   <form id="contest-form">
     <div class="form-section-container">
-      <fieldset>
-        <legend class="main-legend">Required Information</legend>
-        <div class="email-display-container" id="email-display" style="display:none;"></div>
-        <input type="hidden" id="email" name="email">
+      <legend class="main-legend">Required Information</legend>
+      <div id="email-display" style="display:none; background:#e9ecef; border:1px solid #dee2e6; border-radius:5px; padding:10px; margin-bottom:10px;"></div>
+      <input type="hidden" id="email" name="email">
 
-        <div><label for="firstName">First Name</label><input type="text" id="firstName" name="firstName" required></div>
-        <div><label for="lastName">Last Name</label><input type="text" id="lastName" name="lastName" required></div>
-        <div><label for="city">City</label><input type="text" id="city" name="city" required></div>
-        <div>
-          <label for="state">U.S. State</label>
-          <select id="state" name="state" required>
-            <option value="">select option</option>
-            <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option>
-            <option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option>
-            <option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option>
-            <option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option>
-            <option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option>
-            <option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option>
-            <option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option>
-            <option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option>
-            <option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option>
-            <option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option>
-            <option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option>
-            <option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option>
-            <option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option>
-            <option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option>
-            <option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option>
-            <option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option>
-            <option value="WI">Wisconsin</option><option value="WY">Wyoming</option>
-          </select>
-        </div>
+      <div><label for="firstName">First Name</label><input type="text" id="firstName" name="firstName" required></div>
+      <div><label for="lastName">Last Name</label><input type="text" id="lastName" name="lastName" required></div>
+      <div><label for="city">City</label><input type="text" id="city" name="city" required></div>
+      <div>
+        <label for="state">U.S. State</label>
+        <select id="state" name="state" required>
+          <option value="">select option</option>
+          <option value="ME">Maine</option><option value="FL">Florida</option>
+          <!-- add rest of states here -->
+        </select>
+      </div>
 
-        <div class="consent-group">
-          <input type="checkbox" id="consents" name="consents" required>
-          <label for="consents">
-            By checking this box, I certify that I’m at least 18 years old, consent to receive event updates (including prizes),
-            and agree to the <a href="https://maxstache.com/pages/terms-conditions-privacy" target="_blank" rel="noopener noreferrer">Terms, Conditions & Privacy</a> policy.
-          </label>
-        </div>
+      <div class="consent-group">
+        <input type="checkbox" id="consents" required>
+        <label for="consents">I’m at least 18 and agree to updates and the <a href="https://maxstache.com/pages/terms-conditions-privacy" target="_blank">Terms, Conditions & Privacy</a>.</label>
+      </div>
 
-        <div class="upload-wrapper">
-          <span class="upload-text">Upload Your Video</span>
-          <div class="upload-container"><div id="uppy"></div></div>
-          <div id="upload-status"></div>
-          <div id="uploader-error">We couldn't load the uploader. Please refresh with cache disabled (Ctrl/Cmd+Shift+R).</div>
-          <div id="debug"></div>
-        </div>
-      </fieldset>
+      <div class="upload-wrapper">
+        <label class="upload-text">Upload Your Video</label>
+        <div class="upload-container"><div id="uppy"></div></div>
+        <div id="upload-status"></div>
+      </div>
     </div>
 
     <div class="form-section-container">
-      <fieldset>
-        <legend class="main-legend">Optional Information</legend>
-        <p class="form-blurb">Please help us plan for the 2026 Mustache Olympics by taking an extra 30 seconds to share!</p>
+      <legend class="main-legend">Optional Information</legend>
 
-        <details class="accordion">
-          <summary>About Your Talent</summary>
-          <div class="accordion-content">
-            <div>
-              <label for="talentDescription">How would you describe it?</label>
-              <select id="talentDescription" name="talentDescription">
-                <option value="">select option</option>
-                <option value="Athletic">Athletic</option><option value="Funny">Funny</option>
-                <option value="Artistic">Artistic</option><option value="Outrageous">Outrageous</option>
-              </select>
-            </div>
-            <div>
-              <label for="talentOrigin">How did you pick it?</label>
-              <select id="talentOrigin" name="talentOrigin">
-                <option value="">select option</option>
-                <option value="Family Tradition">Family Tradition</option><option value="Happy Accident">Happy Accident</option>
-                <option value="Years of Practice">Years of Practice</option><option value="On a Dare">On a Dare</option>
-                <option value="Natural Calling">Natural Calling</option><option value="Just Felt Right">Just Felt Right</option>
-              </select>
-            </div>
+      <details class="accordion">
+        <summary>About Your Talent</summary>
+        <div class="accordion-content">
+          <div><label for="talentDescription">How would you describe it?</label>
+            <select id="talentDescription"><option value="">select option</option><option>Athletic</option><option>Funny</option><option>Artistic</option><option>Outrageous</option></select>
           </div>
-        </details>
+          <div><label for="talentOrigin">How did you pick it?</label>
+            <select id="talentOrigin"><option value="">select option</option><option>Family Tradition</option><option>Happy Accident</option><option>Years of Practice</option><option>On a Dare</option><option>Natural Calling</option><option>Just Felt Right</option></select>
+          </div>
+        </div>
+      </details>
 
-        <details class="accordion">
-          <summary>About Your 'Stache</summary>
-          <div class="accordion-content">
-            <div>
-              <label for="stacheFrequency">How often do you rock one?</label>
-              <select id="stacheFrequency" name="stacheFrequency">
-                <option value="">select option</option>
-                <option value="All the time">All the time</option><option value="Sometimes">Sometimes</option>
-                <option value="Special Occasions">Special Occasions</option><option value="Barely">Barely</option>
-                <option value="Just for this event">Just for this event</option>
-              </select>
-            </div>
-            <div>
-              <label for="fullness">How would you describe it?</label>
-              <select id="fullness" name="fullness">
-                <option value="">select option</option>
-                <option value="Thick & Bushy">Thick & Bushy</option><option value="About Average">About Average</option>
-                <option value="Trimmed & Thin">Trimmed & Thin</option>
-              </select>
-            </div>
-            <div>
-              <label for="generalStyle">How would you describe its style?</label>
-              <select id="generalStyle" name="generalStyle">
-                <option value="">select option</option>
-                <option value="Styled / Sculpted">Styled / Sculpted</option>
-                <option value="Mostly Natural">Mostly Natural</option>
-                <option value="Wild & Untamed">Wild & Untamed</option>
-              </select>
-            </div>
+      <details class="accordion">
+        <summary>About Your 'Stache</summary>
+        <div class="accordion-content">
+          <div><label for="stacheFrequency">How often?</label>
+            <select id="stacheFrequency"><option value="">select option</option><option>All the time</option><option>Sometimes</option><option>Special Occasions</option><option>Barely</option><option>Just for this event</option></select>
           </div>
-        </details>
-      </fieldset>
+          <div><label for="fullness">How would you describe it?</label>
+            <select id="fullness"><option value="">select option</option><option>Thick & Bushy</option><option>About Average</option><option>Trimmed & Thin</option></select>
+          </div>
+          <div><label for="generalStyle">Style?</label>
+            <select id="generalStyle"><option value="">select option</option><option>Styled / Sculpted</option><option>Mostly Natural</option><option>Wild & Untamed</option></select>
+          </div>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>About You</summary>
+        <div class="accordion-content">
+          <div><label for="source">How did you learn about the event?</label>
+            <select id="source"><option value="">select option</option><option>Friend or Family</option><option>Social Media</option><option>Event Card</option><option>Other</option></select>
+          </div>
+          <div><label for="socialPlatform">Favorite Social Platform</label>
+            <select id="socialPlatform"><option value="">select option</option><option>TikTok</option><option>Instagram</option><option>Facebook</option><option>YouTube</option><option>Other</option></select>
+          </div>
+          <div><label for="socialHandle">Social Media Handle</label><input type="text" id="socialHandle" placeholder="@yourhandle"></div>
+          <div><label for="phone">Phone Number <span class="optional-label">(for event updates via text)</span></label><input type="tel" id="phone"></div>
+        </div>
+      </details>
     </div>
 
     <button type="submit" id="submit-button" disabled>Submit My Entry</button>
@@ -182,172 +120,35 @@
 
   <div id="status"></div>
 
-  <!-- Self-hosted Uppy JS (cache-busted) -->
-  <script defer src="/uppy.min.js?v=2"></script>
-
-  <!-- Init script -->
-  <script defer>
-    const SIGNER_BASE     = "https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
-    const BUCKET          = "maxstache-uploads-2025-mustache-olympics";
-    const REGION          = "us-east-2";
-    const LAMBDA_ENDPOINT = "https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/";
-
-    const statusDiv    = document.getElementById('status');
-    const submitButton = document.getElementById('submit-button');
-    const uploadStatus = document.getElementById('upload-status');
-    const uploaderError= document.getElementById('uploader-error');
-    const debugEl      = document.getElementById('debug');
-
-    function showStatus(msg, type){ statusDiv.className = type; statusDiv.textContent = msg; statusDiv.style.display='block'; }
-    function debug(msg){ debugEl.style.display='block'; debugEl.textContent += (msg + "\n"); }
-    function toPid(email){ return email ? ('PID-' + email.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32)) : 'PID-UNKNOWN'; }
-
-    window.addEventListener('error', (e)=>{ debug("JS error: " + (e.message || e.error)); });
-
-    (function initEmail(){
-      const emailDisplayDiv = document.getElementById('email-display');
-      const emailHiddenInput = document.getElementById('email');
-      const params = new URLSearchParams(window.location.search);
-      const urlEmail = params.get('email');
-      if (urlEmail) localStorage.setItem('mo_email', urlEmail);
-      const email = urlEmail || localStorage.getItem('mo_email') || '';
-      if (email) {
-        emailHiddenInput.value = email;
-        emailDisplayDiv.innerHTML = `Submitting for: <strong>${email}</strong>`;
-        emailDisplayDiv.style.display = 'block';
-      }
-      document.querySelectorAll('select').forEach(sel=>{
-        if (sel.value==="") sel.classList.add('placeholder');
-        sel.addEventListener('change', function(){ this.classList.toggle('placeholder', this.value===""); });
+  <!-- Uppy JS -->
+  <script src="/uppy.min.js"></script>
+  <script>
+    const SIGNER_BASE="https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
+    const BUCKET="maxstache-uploads-2025-mustache-olympics";
+    const REGION="us-east-2";
+    const LAMBDA_ENDPOINT="https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/";
+    const statusDiv=document.getElementById('status');
+    const submitButton=document.getElementById('submit-button');
+    const uploadStatus=document.getElementById('upload-status');
+    let lastSubmissionId=null,lastS3Key=null;
+    function showStatus(msg,type){statusDiv.className=type;statusDiv.textContent=msg;statusDiv.style.display='block';}
+    function toPid(email){return email?('PID-'+email.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,32)):'PID-UNKNOWN';}
+    (function initEmail(){const eD=document.getElementById('email-display');const eH=document.getElementById('email');const params=new URLSearchParams(window.location.search);const urlEmail=params.get('email');if(urlEmail)localStorage.setItem('mo_email',urlEmail);const email=urlEmail||localStorage.getItem('mo_email')||'';if(email){eH.value=email;eD.innerHTML=`Submitting for: <strong>${email}</strong>`;eD.style.display='block';}})();
+    document.addEventListener('DOMContentLoaded',()=>{const U=window.Uppy;if(!U){showStatus('Upload component failed to load.','error');return;}
+      const uppy=new U.Uppy({autoProceed:true,restrictions:{maxNumberOfFiles:1,allowedFileTypes:['video/*'],maxFileSize:1024*1024*1024}});
+      uppy.use(U.Dashboard,{inline:true,target:'#uppy',height:280,note:'Upload a 30s video (max 1 GB).',proudlyDisplayPoweredByUppy:false});
+      uppy.use(U.AwsS3Multipart,{limit:4,
+        createMultipartUpload:async(file)=>{const email=document.getElementById('email').value.trim();const participantId=toPid(email);const r=await fetch(`${SIGNER_BASE}/create-mpu`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({participantId,filename:file.name||'video.mp4',mimeType:file.type||'video/mp4'})});if(!r.ok)throw new Error('Could not start upload');const {uploadId,key,submissionId}=await r.json();uppy.setFileMeta(file.id,{submissionId,s3Key:key});lastSubmissionId=submissionId;lastS3Key=key;uploadStatus.textContent='Uploading…';return {uploadId,key};},
+        signPart:async(file,{key,uploadId,partNumber})=>{const r=await fetch(`${SIGNER_BASE}/sign-part`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,partNumber})});if(!r.ok)throw new Error('Could not sign part');const {url}=await r.json();return {url};},
+        completeMultipartUpload:async(file,{key,uploadId,parts})=>{const r=await fetch(`${SIGNER_BASE}/complete-mpu`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,parts})});if(!r.ok)throw new Error('Could not complete upload');await r.json();return {location:`https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}`};}
       });
-    })();
-
-    let lastSubmissionId = null, lastS3Key = null;
-    function enableSubmitIfReady(){ if (lastSubmissionId) submitButton.disabled = false; }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const U = window.Uppy;
-      if (!U) {
-        uploaderError.style.display='block';
-        debug("Uppy global not found. Ensure /uppy.min.js is served.");
-        return;
-      }
-      if (!U.Uppy || !U.Dashboard || !U.AwsS3Multipart) {
-        uploaderError.style.display='block';
-        debug("Uppy global present but missing expected members (Uppy.Uppy / Uppy.Dashboard / Uppy.AwsS3Multipart). Keys: " + Object.keys(U).join(", "));
-        return;
-      }
-
-      debug("Uppy detected, initializing…");
-
-      const uppy = new U.Uppy({
-        autoProceed: true,
-        restrictions: { maxNumberOfFiles: 1, allowedFileTypes: ['video/*'], maxFileSize: 1024*1024*1024 }
-      });
-
-      uppy.use(U.Dashboard, {
-        inline:true, target:'#uppy', height:360,
-        note:'Upload a 30s slow-mo video (max 1 GB).', proudlyDisplayPoweredByUppy:false
-      });
-
-      uppy.use(U.AwsS3Multipart, {
-        limit: 4,
-        createMultipartUpload: async (file) => {
-          const email = (document.getElementById('email').value || '').trim();
-          const participantId = toPid(email);
-          const r = await fetch(`${SIGNER_BASE}/create-mpu`, {
-            method:'POST', headers:{'content-type':'application/json'},
-            body: JSON.stringify({ participantId, filename: file.name || 'video.mp4', mimeType: file.type || 'video/mp4' })
-          });
-          if (!r.ok) throw new Error('Could not start upload');
-          const { uploadId, key, submissionId } = await r.json();
-          uppy.setFileMeta(file.id, { submissionId, s3Key: key });
-          lastSubmissionId = submissionId; lastS3Key = key;
-          uploadStatus.textContent = `Starting upload… Submission ID: ${submissionId}`;
-          return { uploadId, key };
-        },
-        signPart: async (file, { key, uploadId, partNumber }) => {
-          const r = await fetch(`${SIGNER_BASE}/sign-part`, {
-            method:'POST', headers:{'content-type':'application/json'},
-            body: JSON.stringify({ key, uploadId, partNumber })
-          });
-          if (!r.ok) throw new Error('Could not sign part');
-          const { url } = await r.json();
-          return { url };
-        },
-        completeMultipartUpload: async (file, { key, uploadId, parts }) => {
-          const r = await fetch(`${SIGNER_BASE}/complete-mpu`, {
-            method:'POST', headers:{'content-type':'application/json'},
-            body: JSON.stringify({ key, uploadId, parts })
-          });
-          if (!r.ok) throw new Error('Could not complete upload');
-          await r.json();
-          return { location: `https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}` };
-        }
-      });
-
-      uppy.on('upload-progress', (file, progress) => {
-        const pct = Math.round((progress.bytesUploaded / progress.bytesTotal) * 100);
-        uploadStatus.textContent = `Uploading… ${pct}%`;
-      });
-
-      uppy.on('complete', () => {
-        uploadStatus.textContent = `Upload complete. Submission ID: ${lastSubmissionId}`;
-        enableSubmitIfReady();
-      });
-
-      uppy.on('error', (err) => {
-        showStatus('Upload error: ' + (err && err.message ? err.message : err), 'error');
-        submitButton.disabled = true;
-        debug("Uppy error: " + (err && err.stack ? err.stack : err));
-      });
+      uppy.on('upload-progress',(file,progress)=>{const pct=Math.round((progress.bytesUploaded/progress.bytesTotal)*100);uploadStatus.textContent=`Uploading… ${pct}%`;});
+      uppy.on('complete',()=>{uploadStatus.textContent='Upload complete ✅';submitButton.disabled=false;});
+      uppy.on('error',(err)=>{showStatus('Upload error: '+(err.message||err),'error');submitButton.disabled=true;});
     });
-
-    document.getElementById('contest-form').addEventListener('submit', async function (event) {
-      event.preventDefault();
-      submitButton.disabled = true; submitButton.innerText = 'Submitting…';
-
-      const email = document.getElementById('email').value;
-      if (!email) { showStatus('Email address is missing. Please use the unique link sent to your email.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
-      if (!lastSubmissionId) { showStatus('Please upload your video before submitting the form.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
-      if (!document.getElementById('consents').checked) { showStatus('Please check the consent box to continue.', 'error'); submitButton.disabled=false; submitButton.innerText='Submit My Entry'; return; }
-
-      const payload = {
-        firstName: document.getElementById('firstName').value,
-        lastName:  document.getElementById('lastName').value,
-        email,
-        city: document.getElementById('city').value,
-        state: document.getElementById('state').value,
-        phone: document.getElementById('phone')?.value || '',
-        socialPlatform: document.getElementById('socialPlatform')?.value || '',
-        socialHandle:   document.getElementById('socialHandle')?.value || '',
-        eventSource:    document.getElementById('source')?.value || '',
-        stacheDescription: document.getElementById('fullness')?.value || '',
-        stacheStyle:       document.getElementById('generalStyle')?.value || '',
-        stacheFrequency:   document.getElementById('stacheFrequency')?.value || '',
-        talentDescription: document.getElementById('talentDescription')?.value || '',
-        talentOrigin:      document.getElementById('talentOrigin')?.value || '',
-        submissionId: lastSubmissionId,
-        fileUUID:     lastSubmissionId,
-        s3Key:        lastS3Key,
-        marketingConsent: document.getElementById('consents').checked
-      };
-
-      try {
-        const resp = await fetch(LAMBDA_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-        if (resp.ok) {
-          showStatus('Success! Your entry has been received. Redirecting now…', 'success');
-          setTimeout(()=>{ window.location.href='https://maxstache.com/pages/thanks-for-your-submission'; }, 3000);
-        } else {
-          const err = await resp.json().catch(()=>({}));
-          showStatus(`Error: ${err.message || 'Could not submit your entry.'}`, 'error');
-          submitButton.disabled=false; submitButton.innerText='Submit My Entry';
-        }
-      } catch (e) {
-        showStatus('A network error occurred. Please try again.', 'error');
-        submitButton.disabled=false; submitButton.innerText='Submit My Entry';
-      }
-    });
+    document.getElementById('contest-form').addEventListener('submit',async(e)=>{e.preventDefault();submitButton.disabled=true;submitButton.textContent='Submitting…';const email=document.getElementById('email').value;if(!email){showStatus('Email is missing.','error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';return;}if(!lastSubmissionId){showStatus('Upload your video first.','error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';return;}if(!document.getElementById('consents').checked){showStatus('Please check the consent box.','error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';return;}
+      const payload={firstName:document.getElementById('firstName').value,lastName:document.getElementById('lastName').value,email,city:document.getElementById('city').value,state:document.getElementById('state').value,phone:document.getElementById('phone')?.value||'',socialPlatform:document.getElementById('socialPlatform')?.value||'',socialHandle:document.getElementById('socialHandle')?.value||'',eventSource:document.getElementById('source')?.value||'',stacheDescription:document.getElementById('fullness')?.value||'',stacheStyle:document.getElementById('generalStyle')?.value||'',stacheFrequency:document.getElementById('stacheFrequency')?.value||'',talentDescription:document.getElementById('talentDescription')?.value||'',talentOrigin:document.getElementById('talentOrigin')?.value||'',submissionId:lastSubmissionId,fileUUID:lastSubmissionId,s3Key:lastS3Key,marketingConsent:document.getElementById('consents').checked};
+      try{const resp=await fetch(LAMBDA_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(resp.ok){showStatus('Success! Redirecting…','success');setTimeout(()=>{window.location.href='https://maxstache.com/pages/thanks-for-your-submission';},2500);}else{const err=await resp.json().catch(()=>({}));showStatus('Error: '+(err.message||'Could not submit.'),'error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';}}catch(e){showStatus('Network error.','error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';}});
   </script>
 </body>
 </html>
