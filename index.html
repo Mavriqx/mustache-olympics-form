@@ -8,71 +8,121 @@
   <!-- Self-hosted Uppy CSS -->
   <link rel="stylesheet" href="/uppy.min.css"/>
 
-<style>
-  :root{
-    --border:#e0e0e0;
-    --border-strong:#dee2e6;
-    --bg:#fff;
-    --promo-bg:#f4f4f4;
-    --brand:#7B1E25;
-    --text:#333;
-    --muted:#555;
-    --radius:8px;
-  }
+  <style>
+    :root{
+      --border:#e0e0e0;
+      --border-strong:#ccc;
+      --bg:#fff;
+      --promo-bg:#f4f4f4;
+      --brand:#7B1E25;   /* Burgundy */
+      --brand-dark:#61181E;
+      --text:#333;
+      --muted:#555;
+      --radius:8px;
+    }
 
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:var(--text);max-width:640px;margin:40px auto;padding:0 20px}
-  .title-container{display:flex;flex-direction:column;gap:15px;margin-bottom:20px}
-  .logo-container{border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:var(--bg)}
-  .logo{max-width:300px;margin:0 auto;display:block}
-  h1{color:#111;margin:0;line-height:1.2;text-align:left}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:var(--text);max-width:640px;margin:40px auto;padding:0 20px}
+    .title-container{display:flex;flex-direction:column;gap:15px;margin-bottom:8px}
+    .logo-container{border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:var(--bg)}
+    .logo{max-width:300px;margin:0 auto;display:block}
+    h1{color:#111;margin:0;line-height:1.2;text-align:left}
 
-  .social-promo,
-  #email-display{
-    border:1px solid var(--border-strong);
-    border-radius:6px;
-    padding:10px 12px;
-    background:#f8f9fa;
-    width:100%;
-    box-sizing:border-box;
-  }
-  .social-promo{border-left:4px solid var(--brand);background:var(--promo-bg);margin:20px 0;font-size:.95em}
+    /* Make promo + email banner look like inputs (same width/border/radius) */
+    .banner-like,
+    input, select {
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid var(--border-strong);
+      border-radius:6px;
+    }
+    .social-promo{
+      background:var(--promo-bg);
+      padding:10px 12px;
+      margin:16px 0 20px 0;
+      border-left:4px solid var(--brand);
+    }
+    #email-display{
+      background:#f8f9fa;
+      padding:10px 12px;
+      margin:10px 0 12px 0;
+    }
 
-  form{display:flex;flex-direction:column;gap:20px}
-  label{font-weight:600}
-  input,select{padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;width:100%}
+    form{display:flex;flex-direction:column;gap:20px}
+    label{font-weight:600}
+    input,select{padding:10px;font-size:16px}
 
-  .consent-card{
-    display:grid;
-    grid-template-columns:auto 1fr;
-    gap:12px;
-    align-items:start;
-    border:1px solid var(--border);
-    border-radius:6px;
-    background:var(--bg);
-    padding:12px;
-  }
-  .consent-card input[type="checkbox"]{margin-top:4px}
-  .consent-card label{font-weight:400;color:var(--muted)}
+    /* Consent: structured card aligned with fields */
+    .consent-card{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:12px;
+      align-items:start;
+      border:1px solid var(--border-strong);
+      border-radius:6px;
+      background:var(--bg);
+      padding:12px;
+      margin-top:12px;
+    }
+    .consent-card input[type="checkbox"]{margin-top:4px}
+    .consent-card label{font-weight:400;color:var(--muted)}
 
-  .upload-wrapper{margin-top:15px}
-  .upload-container{border:1px solid #ccc;border-radius:6px;padding:15px;background:#fff}
+    /* Uploader */
+    .upload-wrapper{margin-top:6px}
+    .upload-container{border:1px solid var(--border-strong);border-radius:6px;padding:15px;background:#fff}
+    /* Hide duplicate progress line & remove inner scrollbar */
+    #upload-status{display:none!important;}
+    .uppy-Dashboard-files{max-height:none!important;}
 
-  /* Hide duplicate progress line */
-  #upload-status{display:none!important;}
+    /* Status message */
+    #status{margin-top:20px;padding:12px;border-radius:6px;text-align:center;display:none}
+    .success{background:#d4edda;color:#155724}
+    .error{background:#f8d7da;color:#721c24}
 
-  /* Remove inner scrollbars in Uppy file list */
-  .uppy-Dashboard-files{max-height:none!important;}
+    /* Section headers */
+    .main-legend {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 6px;
+      display: block;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 4px;
+    }
+    .section-subtitle {
+      font-size: 0.9em;
+      color: var(--muted);
+      margin: 4px 0 12px;
+      font-style: italic;
+    }
+    
+    /* Accordions */
+    .accordion {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .accordion summary {
+      font-weight: 700;
+      padding: 14px;
+      cursor: pointer;
+    }
+    .accordion-content {
+      padding: 0 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
-  #status{margin-top:20px;padding:12px;border-radius:6px;text-align:center;display:none}
-  .success{background:#d4edda;color:#155724}
-  .error{background:#f8d7da;color:#721c24}
-
-  /* Accordions */
-  .accordion{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:#fff}
-  .accordion summary{font-weight:700;padding:14px;cursor:pointer}
-  .accordion-content{padding:0 14px 14px;display:flex;flex-direction:column;gap:14px}
-</style>
-
+    /* Submit area: right-aligned burgundy button */
+    .actions{display:flex;justify-content:flex-end;margin-top:4px}
+    .btn-primary{
+      background:var(--brand); color:#fff; border:none; border-radius:6px;
+      padding:12px 20px; font-size:16px; cursor:pointer;
+    }
+    .btn-primary:hover{background:var(--brand-dark)}
+    .btn-primary:disabled{background:#bbb; cursor:not-allowed}
+  </style>
 </head>
 <body>
   <div class="title-container">
@@ -169,7 +219,7 @@
         <label class="upload-text">Upload Your Video</label>
         <div class="upload-container"><div id="uppy"></div></div>
         <p style="font-size:0.9em;color:#666;margin-top:6px;">
-          Please upload a <strong>MP4</strong> or <strong>MOV</strong> video up to <strong>30 seconds</strong> (max <strong>1 GB</strong>).</p>
+          Please upload a <strong>MP4</strong> or <strong>MOV</strong> video up to <strong>30 seconds</strong> (max <strong>1 GB</strong>).
         </p>
         <div id="upload-status"></div>
       </div>
@@ -274,16 +324,33 @@
       const U=window.Uppy;
       if(!U){showStatus('Upload component failed to load.','error');return;}
 
-      const uppy=new U.Uppy({autoProceed:true,restrictions:{maxNumberOfFiles:1,allowedFileTypes:['video/mp4','video/quicktime'],maxFileSize:1024*1024*1024}});
+      const uppy=new U.Uppy({
+        autoProceed:true,
+        restrictions:{maxNumberOfFiles:1,allowedFileTypes:['video/mp4','video/quicktime'],maxFileSize:1024*1024*1024}
+      });
 
-      uppy.use(U.Dashboard,{inline:true,target:'#uppy',height:180,note:'Upload a MP4 or MOV video (max 1 GB).',proudlyDisplayPoweredByUppy:false,showProgressDetails:true,hideUploadButton:true,hideRetryButton:true,hidePauseResumeButton:true,showRemoveButtonAfterComplete:true});
-
+      uppy.use(U.Dashboard,{
+        inline:true,
+        target:'#uppy',
+        height:220,
+        note:'Upload a MP4 or MOV video (max 1 GB).',
+        proudlyDisplayPoweredByUppy:false,
+        showProgressDetails:true,
+        hideUploadButton:true,
+        hideRetryButton:true,
+        hidePauseResumeButton:true,
+        showRemoveButtonAfterComplete:true
+      });
 
       uppy.use(U.AwsS3Multipart,{limit:4,
         createMultipartUpload:async(file)=>{
           const email=document.getElementById('email').value.trim();
           const participantId=toPid(email);
-          const r=await fetch(`${SIGNER_BASE}/create-mpu`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({participantId,filename:file.name||'video.mp4',mimeType:file.type||'video/mp4'})});
+          const r=await fetch(`${SIGNER_BASE}/create-mpu`,{
+            method:'POST',
+            headers:{'content-type':'application/json'},
+            body:JSON.stringify({participantId,filename:file.name||'video.mp4',mimeType:file.type||'video/mp4'})
+          });
           if(!r.ok)throw new Error('Could not start upload');
           const {uploadId,key,submissionId}=await r.json();
           uppy.setFileMeta(file.id,{submissionId,s3Key:key});
@@ -292,13 +359,17 @@
           return {uploadId,key};
         },
         signPart:async(file,{key,uploadId,partNumber})=>{
-          const r=await fetch(`${SIGNER_BASE}/sign-part`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,partNumber})});
+          const r=await fetch(`${SIGNER_BASE}/sign-part`,{
+            method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,partNumber})
+          });
           if(!r.ok)throw new Error('Could not sign part');
           const {url}=await r.json();
           return {url};
         },
         completeMultipartUpload:async(file,{key,uploadId,parts})=>{
-          const r=await fetch(`${SIGNER_BASE}/complete-mpu`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,parts})});
+          const r=await fetch(`${SIGNER_BASE}/complete-mpu`,{
+            method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,parts})
+          });
           if(!r.ok)throw new Error('Could not complete upload');
           await r.json();
           return {location:`https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}`};
@@ -369,12 +440,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
