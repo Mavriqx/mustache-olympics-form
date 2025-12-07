@@ -21,11 +21,37 @@
       --radius:8px;
     }
 
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:var(--text);max-width:640px;margin:40px auto;padding:0 20px}
-    .title-container{display:flex;flex-direction:column;gap:15px;margin-bottom:8px}
-    .logo-container{border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:var(--bg)}
-    .logo{max-width:300px;margin:0 auto;display:block}
-    h1{color:#111;margin:0;line-height:1.2;text-align:left}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      line-height:1.6;
+      color:var(--text);
+      max-width:640px;
+      margin:40px auto;
+      padding:0 20px
+    }
+    .title-container{
+      display:flex;
+      flex-direction:column;
+      gap:15px;
+      margin-bottom:8px
+    }
+    .logo-container{
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px;
+      background:var(--bg)
+    }
+    .logo{
+      max-width:300px;
+      margin:0 auto;
+      display:block
+    }
+    h1{
+      color:#111;
+      margin:0;
+      line-height:1.2;
+      text-align:left
+    }
 
     /* Make promo + email banner look like inputs (same width/border/radius) */
     .banner-like,
@@ -47,9 +73,18 @@
       margin:10px 0 12px 0;
     }
 
-    form{display:flex;flex-direction:column;gap:20px}
-    label{font-weight:600}
-    input,select{padding:10px;font-size:16px}
+    form{
+      display:flex;
+      flex-direction:column;
+      gap:20px
+    }
+    label{
+      font-weight:600
+    }
+    input,select{
+      padding:10px;
+      font-size:16px
+    }
 
     /* Consent: structured card aligned with fields */
     .consent-card{
@@ -64,17 +99,31 @@
       margin-top:12px;
     }
     .consent-card input[type="checkbox"]{margin-top:4px}
-    .consent-card label{font-weight:400;color:var(--muted)}
+    .consent-card label{
+      font-weight:400;
+      color:var(--muted)
+    }
 
     /* Uploader */
     .upload-wrapper{margin-top:6px}
-    .upload-container{border:1px solid var(--border-strong);border-radius:6px;padding:15px;background:#fff}
+    .upload-container{
+      border:1px solid var(--border-strong);
+      border-radius:6px;
+      padding:15px;
+      background:#fff
+    }
     /* Hide duplicate progress line & remove inner scrollbar */
     #upload-status{display:none!important;}
     .uppy-Dashboard-files{max-height:none!important;}
 
     /* Status message */
-    #status{margin-top:20px;padding:12px;border-radius:6px;text-align:center;display:none}
+    #status{
+      margin-top:20px;
+      padding:12px;
+      border-radius:6px;
+      text-align:center;
+      display:none
+    }
     .success{background:#d4edda;color:#155724}
     .error{background:#f8d7da;color:#721c24}
 
@@ -115,23 +164,39 @@
     }
 
     /* Submit area: right-aligned burgundy button */
-    .actions{display:flex;justify-content:flex-end;margin-top:4px}
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:4px
+    }
     .btn-primary{
-      background:var(--brand); color:#fff; border:none; border-radius:6px;
-      padding:12px 20px; font-size:16px; cursor:pointer;
+      background:var(--brand);
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      padding:12px 20px;
+      font-size:16px;
+      cursor:pointer;
     }
     .btn-primary:hover{background:var(--brand-dark)}
     .btn-primary:disabled{background:#bbb; cursor:not-allowed}
-    .uppy-StatusBar-actionBtn--done,.uppy-DashboardContent-bar .uppy-DashboardContent-save{display:none!important;}
+    .uppy-StatusBar-actionBtn--done,
+    .uppy-DashboardContent-bar .uppy-DashboardContent-save{
+      display:none!important;
+    }
   </style>
 </head>
 <body>
   <div class="title-container">
-    <div class="logo-container"><img src="Black.png" alt="Mustache Games Logo" class="logo"></div>
+    <div class="logo-container">
+      <img src="Black.png" alt="Mustache Games Logo" class="logo">
+    </div>
     <h1>Enter the 2025 Mustache Games</h1>
   </div>
 
-  <div class="social-promo banner-like">Upload your video below. Let the games & grooming begin!</div>
+  <div class="social-promo banner-like">
+    Upload your video below. Let the games & grooming begin!
+  </div>
 
   <form id="contest-form">
     <div class="form-section-container">
@@ -140,9 +205,18 @@
       <div id="email-display" class="banner-like" style="display:none;"></div>
       <input type="hidden" id="email" name="email">
 
-      <div><label for="firstName">First Name</label><input type="text" id="firstName" name="firstName" required></div>
-      <div><label for="lastName">Last Name</label><input type="text" id="lastName" name="lastName" required></div>
-      <div><label for="city">City</label><input type="text" id="city" name="city" required></div>
+      <div>
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" required>
+      </div>
+      <div>
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" required>
+      </div>
+      <div>
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" required>
+      </div>
 
       <div>
         <label for="state">U.S. State or International</label>
@@ -209,18 +283,32 @@
         </select>
       </div>
 
+      <!-- NEW FIELD: Are you the person in the video? -->
+      <div>
+        <label for="isSubmitterInVideo">Are you the person in the video?</label>
+        <select id="isSubmitterInVideo" required>
+          <option value="" disabled selected hidden>Select one…</option>
+          <option value="yes">Yes – I’m in the video</option>
+          <option value="no">No – it features someone else</option>
+        </select>
+      </div>
+
       <!-- Structured consent card -->
       <div class="consent-card">
         <input type="checkbox" id="consents" required>
         <label for="consents">
           I’m at least 18 and agree to receive event updates and to the
-          <a href="https://maxstache.com/pages/terms-conditions-privacy" target="_blank" rel="noopener">Terms, Conditions &amp; Privacy Policy</a>.
+          <a href="https://maxstache.com/pages/terms-conditions-privacy" target="_blank" rel="noopener">
+            Terms, Conditions &amp; Privacy Policy
+          </a>.
         </label>
       </div>
 
       <div class="upload-wrapper">
         <label class="upload-text">Upload Your Video</label>
-        <div class="upload-container"><div id="uppy"></div></div>
+        <div class="upload-container">
+          <div id="uppy"></div>
+        </div>
         <p style="font-size:0.9em;color:#666;margin-top:6px;">
           Please upload a <strong>MP4</strong> or <strong>MOV</strong> video up to <strong>30 seconds</strong> (max <strong>1 GB</strong>).
         </p>
@@ -230,22 +318,32 @@
 
     <div class="form-section-container">
       <legend class="main-legend">Optional Information</legend>
-      <p class="section-subtitle">It only takes 30 seconds — complete the optional questions below to shape next year’s Mustache Games.</p>
+      <p class="section-subtitle">
+        It only takes 30 seconds — complete the optional questions below to shape next year’s Mustache Games.
+      </p>
 
       <details class="accordion">
         <summary>About Your Talent</summary>
         <div class="accordion-content">
-          <div><label for="talentDescription">How would you describe you talent?</label>
+          <div>
+            <label for="talentDescription">How would you describe you talent?</label>
             <select id="talentDescription">
               <option value="">select option</option>
-              <option>Athletic</option><option>Funny</option><option>Artistic</option><option>Outrageous</option>
+              <option>Athletic</option>
+              <option>Funny</option>
+              <option>Artistic</option>
+              <option>Outrageous</option>
             </select>
           </div>
-          <div><label for="talentOrigin">How did you pick your talent?</label>
+          <div>
+            <label for="talentOrigin">How did you pick your talent?</label>
             <select id="talentOrigin">
               <option value="">select option</option>
-              <option>Years of Practice</option><option>Happy Accident</option>
-              <option>On a Dare</option><option>Natural Calling</option><option>Just Felt Right</option>
+              <option>Years of Practice</option>
+              <option>Happy Accident</option>
+              <option>On a Dare</option>
+              <option>Natural Calling</option>
+              <option>Just Felt Right</option>
             </select>
           </div>
         </div>
@@ -254,22 +352,34 @@
       <details class="accordion">
         <summary>About Your 'Stache</summary>
         <div class="accordion-content">
-          <div><label for="stacheFrequency">How often do you rock a 'stache?</label>
+          <div>
+            <label for="stacheFrequency">How often do you rock a 'stache?</label>
             <select id="stacheFrequency">
               <option value="">select option</option>
-              <option>All the time</option><option>Sometimes</option><option>Special Occasions</option><option>Barely</option><option>Just for this event</option>
+              <option>All the time</option>
+              <option>Sometimes</option>
+              <option>Special Occasions</option>
+              <option>Barely</option>
+              <option>Just for this event</option>
             </select>
           </div>
-          <div><label for="fullness">How would you describe your 'stache type?</label>
+          <div>
+            <label for="fullness">How would you describe your 'stache type?</label>
             <select id="fullness">
               <option value="">select option</option>
-              <option>Thick or Bushy</option><option>About Average</option><option>Skinny or Thin</option>
+              <option>Thick or Bushy</option>
+              <option>About Average</option>
+              <option>Skinny or Thin</option>
             </select>
           </div>
-          <div><label for="generalStyle">How would you describe your 'stache style?</label>
+          <div>
+            <label for="generalStyle">How would you describe your 'stache style?</label>
             <select id="generalStyle">
               <option value="">select option</option>
-              <option>Perfectly Sculpted</option><option>Waxed or Styled</option><option>Mostly Natural</option><option>Wild or Untamed</option>
+              <option>Perfectly Sculpted</option>
+              <option>Waxed or Styled</option>
+              <option>Mostly Natural</option>
+              <option>Wild or Untamed</option>
             </select>
           </div>
         </div>
@@ -278,14 +388,37 @@
       <details class="accordion">
         <summary>About You</summary>
         <div class="accordion-content">
-          <div><label for="source">How did you learn about this event?</label>
-            <select id="source"><option value="">select option</option><option>Friend or Family</option><option>Social Media</option><option>Event Card</option><option>Other</option></select>
+          <div>
+            <label for="source">How did you learn about this event?</label>
+            <select id="source">
+              <option value="">select option</option>
+              <option>Friend or Family</option>
+              <option>Social Media</option>
+              <option>Event Card</option>
+              <option>Other</option>
+            </select>
           </div>
-          <div><label for="socialPlatform">What's your favorite social media platform?</label>
-            <select id="socialPlatform"><option value="">select option</option><option>TikTok</option><option>Instagram</option><option>Facebook</option><option>YouTube</option><option>Other</option></select>
+          <div>
+            <label for="socialPlatform">What's your favorite social media platform?</label>
+            <select id="socialPlatform">
+              <option value="">select option</option>
+              <option>TikTok</option>
+              <option>Instagram</option>
+              <option>Facebook</option>
+              <option>YouTube</option>
+              <option>Other</option>
+            </select>
           </div>
-          <div><label for="socialHandle">What's your social media handle?</label><input type="text" id="socialHandle" placeholder="@yourhandle"></div>
-          <div><label for="phone">What's your phone mumber <span class="optional-label">(for event updates via text)?</span></label><input type="tel" id="phone"></div>
+          <div>
+            <label for="socialHandle">What's your social media handle?</label>
+            <input type="text" id="socialHandle" placeholder="@yourhandle">
+          </div>
+          <div>
+            <label for="phone">What's your phone mumber 
+              <span class="optional-label">(for event updates via text)?</span>
+            </label>
+            <input type="tel" id="phone">
+          </div>
         </div>
       </details>
     </div>
@@ -310,8 +443,14 @@
     const uploadStatus=document.getElementById('upload-status');
     let lastSubmissionId=null,lastS3Key=null;
 
-    function showStatus(msg,type){statusDiv.className=type;statusDiv.textContent=msg;statusDiv.style.display='block';}
-    function toPid(email){return email?('PID-'+email.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,32)):'PID-UNKNOWN';}
+    function showStatus(msg,type){
+      statusDiv.className=type;
+      statusDiv.textContent=msg;
+      statusDiv.style.display='block';
+    }
+    function toPid(email){
+      return email?('PID-'+email.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,32)):'PID-UNKNOWN';
+    }
 
     (function initEmail(){
       const eD=document.getElementById('email-display');
@@ -320,16 +459,27 @@
       const urlEmail=params.get('email');
       if(urlEmail)localStorage.setItem('mo_email',urlEmail);
       const email=urlEmail||localStorage.getItem('mo_email')||'';
-      if(email){eH.value=email;eD.innerHTML=`Submitting for: <strong>${email}</strong>`;eD.style.display='block';}
+      if(email){
+        eH.value=email;
+        eD.innerHTML=`Submitting for: <strong>${email}</strong>`;
+        eD.style.display='block';
+      }
     })();
 
     document.addEventListener('DOMContentLoaded',()=>{
       const U=window.Uppy;
-      if(!U){showStatus('Upload component failed to load.','error');return;}
+      if(!U){
+        showStatus('Upload component failed to load.','error');
+        return;
+      }
 
       const uppy=new U.Uppy({
         autoProceed:true,
-        restrictions:{maxNumberOfFiles:1,allowedFileTypes:['video/mp4','video/quicktime'],maxFileSize:1024*1024*1024}
+        restrictions:{
+          maxNumberOfFiles:1,
+          allowedFileTypes:['video/mp4','video/quicktime'],
+          maxFileSize:1024*1024*1024
+        }
       });
 
       uppy.use(U.Dashboard,{
@@ -345,25 +495,33 @@
         showRemoveButtonAfterComplete:true
       });
 
-      uppy.use(U.AwsS3Multipart,{limit:4,
+      uppy.use(U.AwsS3Multipart,{
+        limit:4,
         createMultipartUpload:async(file)=>{
           const email=document.getElementById('email').value.trim();
           const participantId=toPid(email);
           const r=await fetch(`${SIGNER_BASE}/create-mpu`,{
             method:'POST',
             headers:{'content-type':'application/json'},
-            body:JSON.stringify({participantId,filename:file.name||'video.mp4',mimeType:file.type||'video/mp4'})
+            body:JSON.stringify({
+              participantId,
+              filename:file.name||'video.mp4',
+              mimeType:file.type||'video/mp4'
+            })
           });
           if(!r.ok)throw new Error('Could not start upload');
           const {uploadId,key,submissionId}=await r.json();
           uppy.setFileMeta(file.id,{submissionId,s3Key:key});
-          lastSubmissionId=submissionId;lastS3Key=key;
+          lastSubmissionId=submissionId;
+          lastS3Key=key;
           uploadStatus.textContent='Uploading…';
           return {uploadId,key};
         },
         signPart:async(file,{key,uploadId,partNumber})=>{
           const r=await fetch(`${SIGNER_BASE}/sign-part`,{
-            method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,partNumber})
+            method:'POST',
+            headers:{'content-type':'application/json'},
+            body:JSON.stringify({key,uploadId,partNumber})
           });
           if(!r.ok)throw new Error('Could not sign part');
           const {url}=await r.json();
@@ -371,11 +529,15 @@
         },
         completeMultipartUpload:async(file,{key,uploadId,parts})=>{
           const r=await fetch(`${SIGNER_BASE}/complete-mpu`,{
-            method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key,uploadId,parts})
+            method:'POST',
+            headers:{'content-type':'application/json'},
+            body:JSON.stringify({key,uploadId,parts})
           });
           if(!r.ok)throw new Error('Could not complete upload');
           await r.json();
-          return {location:`https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}`};
+          return {
+            location:`https://${BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(key)}`
+          };
         }
       });
 
@@ -397,12 +559,28 @@
 
     document.getElementById('contest-form').addEventListener('submit',async(e)=>{
       e.preventDefault();
-      submitButton.disabled=true; submitButton.textContent='Submitting…';
+      submitButton.disabled=true;
+      submitButton.textContent='Submitting…';
 
       const email=document.getElementById('email').value;
-      if(!email){showStatus('Email is missing.','error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';return;}
-      if(!lastSubmissionId){showStatus('Upload your video first.','error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';return;}
-      if(!document.getElementById('consents').checked){showStatus('Please check the consent box.','error');submitButton.disabled=false;submitButton.textContent='Submit My Entry';return;}
+      if(!email){
+        showStatus('Email is missing.','error');
+        submitButton.disabled=false;
+        submitButton.textContent='Submit My Entry';
+        return;
+      }
+      if(!lastSubmissionId){
+        showStatus('Upload your video first.','error');
+        submitButton.disabled=false;
+        submitButton.textContent='Submit My Entry';
+        return;
+      }
+      if(!document.getElementById('consents').checked){
+        showStatus('Please check the consent box.','error');
+        submitButton.disabled=false;
+        submitButton.textContent='Submit My Entry';
+        return;
+      }
 
       const payload={
         firstName:document.getElementById('firstName').value,
@@ -419,6 +597,8 @@
         stacheFrequency:document.getElementById('stacheFrequency')?.value||'',
         talentDescription:document.getElementById('talentDescription')?.value||'',
         talentOrigin:document.getElementById('talentOrigin')?.value||'',
+        // NEW FIELD
+        isSubmitterInVideo: document.getElementById('isSubmitterInVideo')?.value || '',
         submissionId:lastSubmissionId,
         fileUUID:lastSubmissionId,
         s3Key:lastS3Key,
@@ -426,25 +606,28 @@
       };
 
       try{
-        const resp=await fetch(LAMBDA_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const resp=await fetch(LAMBDA_ENDPOINT,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(payload)
+        });
         if(resp.ok){
           showStatus('Success! Redirecting…','success');
-          setTimeout(()=>{window.location.href='https://maxstache.com/pages/thanks-for-your-submission';},2500);
+          setTimeout(()=>{
+            window.location.href='https://maxstache.com/pages/thanks-for-your-submission';
+          },2500);
         }else{
           const err=await resp.json().catch(()=>({}));
           showStatus('Error: '+(err.message||'Could not submit.'),'error');
-          submitButton.disabled=false; submitButton.textContent='Submit My Entry';
+          submitButton.disabled=false;
+          submitButton.textContent='Submit My Entry';
         }
       }catch(e){
         showStatus('Network error.','error');
-        submitButton.disabled=false; submitButton.textContent='Submit My Entry';
+        submitButton.disabled=false;
+        submitButton.textContent='Submit My Entry';
       }
     });
   </script>
 </body>
 </html>
-
-
-
-
-
