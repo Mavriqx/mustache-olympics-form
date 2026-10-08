@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Enter the 2025 Mustache Games</title>
+  <title>Enter the 2026 Mustache Games</title>
 
   <!-- Self-hosted Uppy CSS -->
   <link rel="stylesheet" href="/uppy.min.css"/>
@@ -114,6 +114,7 @@
       padding:15px;
       background:#fff
     }
+    .consent-card input[type="checkbox"]{width:auto;box-sizing:content-box}
     /* Hide duplicate progress line & remove inner scrollbar */
     #upload-status{display:none!important;}
     .uppy-Dashboard-files{max-height:none!important;}
@@ -193,19 +194,25 @@
     <div class="logo-container">
       <img src="Black.png" alt="Mustache Games Logo" class="logo">
     </div>
-    <h1>Enter the 2025 Mustache Games</h1>
+    <h1>Enter the 2026 Mustache Games</h1>
   </div>
 
   <div class="social-promo banner-like">
-    Upload your most entertaining video that includes any mustache. If your submission features someone else and wins a cash prize, the prize is donated to Movember and the medal goes to them. Any mustache counts. Only submit videos you legally obtained. Must be 18+ to enter. U.S. residents are eligible for cash prizes. Entries close December 31, 2025.
+    <strong>SHOW US YOUR ’STACHE.</strong> The 2026 Mustache Games are open! Submit a video featuring your own naturally grown mustache. No elaborate performance required—how you show it is up to you. Free to enter · Worldwide · Ages 18+. One entry per person. Entries close December 31, 2026.
+  </div>
+  <div class="social-promo banner-like">
+    <strong>Official Awards:</strong> Gold, Silver and Bronze medals for the top three; certificates for 4th–10th place; an official Black Medal for the People’s Choice winner selected by public voting; and additional special recognitions. No cash prizes.
+    <p><strong>Supporting men's health:</strong> MaxStache will donate $1 to Movember for each eligible entry, up to $3,000. No purchase or donation required to enter.</p>
   </div>
 
   <form id="contest-form">
     <div class="form-section-container">
       <legend class="main-legend">Required Information</legend>
 
-      <div id="email-display" class="banner-like" style="display:none;"></div>
-      <input type="hidden" id="email" name="email">
+      <div>
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com">
+      </div>
 
       <div>
         <label for="firstName">First Name</label>
@@ -224,7 +231,6 @@
         <label for="state">U.S. State or International</label>
         <select id="state" name="state" required>
           <option value="" disabled selected hidden>Select your state or other…</option>
-          <option value="AL">Alabama</option>
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
           <option value="AS">American Samoa</option>
@@ -287,11 +293,10 @@
 
       <!-- NEW FIELD: Are you the person in the video? -->
       <div>
-        <label for="isSubmitterInVideo">Are you the person in the video?</label>
+        <label for="isSubmitterInVideo">Is this your mustache in the video?</label>
         <select id="isSubmitterInVideo" required>
           <option value="" disabled selected hidden>Select one…</option>
-          <option value="yes">Yes – I’m in the video</option>
-          <option value="no">No – it features someone else</option>
+          <option value="yes">Yes — it is my mustache</option>
         </select>
       </div>
 
@@ -299,11 +304,15 @@
       <div class="consent-card">
         <input type="checkbox" id="consents" required>
         <label for="consents">
-          I’m at least 18 and agree to receive event updates and to the
+          I confirm that I am at least 18, the video features my own naturally grown mustache, and I agree to the
           <a href="https://maxstache.com/pages/terms-conditions-privacy" target="_blank" rel="noopener">
             Terms, Conditions &amp; Privacy Policy
           </a>.
         </label>
+      </div>
+      <div class="consent-card">
+        <input type="checkbox" id="marketingConsent">
+        <label for="marketingConsent">Optional: I'd like to receive MaxStache product news and marketing emails. I can unsubscribe at any time.</label>
       </div>
 
       <div class="upload-wrapper">
@@ -312,7 +321,7 @@
           <div id="uppy"></div>
         </div>
         <p style="font-size:0.9em;color:#666;margin-top:6px;">
-          Please upload a <strong>MP4</strong> or <strong>MOV</strong> video up to <strong>30 seconds</strong> (max <strong>1 GB</strong>).
+          Please upload an <strong>MP4</strong> or <strong>MOV</strong> video (max <strong>1 GB</strong>). Keep it around 5–30 seconds. Make sure your mustache is clearly visible.
         </p>
         <div id="upload-status"></div>
       </div>
@@ -321,35 +330,8 @@
     <div class="form-section-container">
       <legend class="main-legend">Optional Information</legend>
       <p class="section-subtitle">
-        It only takes 30 seconds — complete the optional questions below to shape next year’s Mustache Games.
+        Tell us a little about your mustache. These questions are optional.
       </p>
-
-      <details class="accordion">
-        <summary>About Your Talent</summary>
-        <div class="accordion-content">
-          <div>
-            <label for="talentDescription">How would you describe you talent?</label>
-            <select id="talentDescription">
-              <option value="">select option</option>
-              <option>Athletic</option>
-              <option>Funny</option>
-              <option>Artistic</option>
-              <option>Outrageous</option>
-            </select>
-          </div>
-          <div>
-            <label for="talentOrigin">How did you pick your talent?</label>
-            <select id="talentOrigin">
-              <option value="">select option</option>
-              <option>Years of Practice</option>
-              <option>Happy Accident</option>
-              <option>On a Dare</option>
-              <option>Natural Calling</option>
-              <option>Just Felt Right</option>
-            </select>
-          </div>
-        </div>
-      </details>
 
       <details class="accordion">
         <summary>About Your 'Stache</summary>
@@ -416,7 +398,7 @@
             <input type="text" id="socialHandle" placeholder="@yourhandle">
           </div>
           <div>
-            <label for="phone">What's your phone mumber 
+            <label for="phone">What's your phone number 
               <span class="optional-label">(for event updates via text)?</span>
             </label>
             <input type="tel" id="phone">
@@ -436,14 +418,18 @@
   <script src="/uppy.min.js"></script>
   <script>
     const SIGNER_BASE="https://2gflx5uo7lqzj2exr2dgybofrq0uvrhy.lambda-url.us-east-2.on.aws";
+    // Existing S3 bucket retained. The event prefix is controlled by the signer Lambda EVENT_ID.
     const BUCKET="maxstache-uploads-2025-mustache-olympics";
     const REGION="us-east-2";
+    // IMPORTANT: backend must be updated to save eventId, s3Key and marketingConsent before deployment.
     const LAMBDA_ENDPOINT="https://lf5ekhxuvwgwuhc34tsis6eldm0ltwzr.lambda-url.us-east-2.on.aws/";
 
+    // DEPLOYMENT NOTE: update the signer Lambda EVENT_ID to 2026-mustache-games first.
     const statusDiv=document.getElementById('status');
     const submitButton=document.getElementById('submit-button');
     const uploadStatus=document.getElementById('upload-status');
     let lastSubmissionId=null,lastS3Key=null;
+    let uploadSucceeded=false;
 
     function showStatus(msg,type){
       statusDiv.className=type;
@@ -454,19 +440,9 @@
       return email?('PID-'+email.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,32)):'PID-UNKNOWN';
     }
 
-    (function initEmail(){
-      const eD=document.getElementById('email-display');
-      const eH=document.getElementById('email');
-      const params=new URLSearchParams(window.location.search);
-      const urlEmail=params.get('email');
-      if(urlEmail)localStorage.setItem('mo_email',urlEmail);
-      const email=urlEmail||localStorage.getItem('mo_email')||'';
-      if(email){
-        eH.value=email;
-        eD.innerHTML=`Submitting for: <strong>${email}</strong>`;
-        eD.style.display='block';
-      }
-    })();
+    document.getElementById('email').addEventListener('change',()=>{
+      if(lastSubmissionId){showStatus('Email changed after upload. Please remove the video and upload it again before submitting.','error');submitButton.disabled=true;uploadSucceeded=false;}
+    });
 
     document.addEventListener('DOMContentLoaded',()=>{
       const U=window.Uppy;
@@ -500,7 +476,9 @@
       uppy.use(U.AwsS3Multipart,{
         limit:4,
         createMultipartUpload:async(file)=>{
-          const email=document.getElementById('email').value.trim();
+          const emailField=document.getElementById('email');
+          if(!emailField.reportValidity())throw new Error('Enter your email address before uploading.');
+          const email=emailField.value.trim().toLowerCase();
           const participantId=toPid(email);
           const r=await fetch(`${SIGNER_BASE}/create-mpu`,{
             method:'POST',
@@ -548,9 +526,13 @@
         uploadStatus.textContent=`Uploading… ${pct}%`;
       });
 
-      uppy.on('complete',()=>{
-        uploadStatus.textContent='Upload complete ✅';
-        submitButton.disabled=false;
+      uppy.on('complete',(result)=>{
+        uploadSucceeded=Boolean(result?.successful?.length===1 && !(result?.failed?.length));
+        uploadStatus.textContent=uploadSucceeded?'Upload complete':'Upload failed. Please try again.';
+        submitButton.disabled=!uploadSucceeded;
+      });
+      uppy.on('file-removed',()=>{
+        uploadSucceeded=false;lastSubmissionId=null;lastS3Key=null;submitButton.disabled=true;
       });
 
       uppy.on('error',(err)=>{
@@ -564,14 +546,14 @@
       submitButton.disabled=true;
       submitButton.textContent='Submitting…';
 
-      const email=document.getElementById('email').value;
+      const email=document.getElementById('email').value.trim().toLowerCase();
       if(!email){
         showStatus('Email is missing.','error');
         submitButton.disabled=false;
         submitButton.textContent='Submit My Entry';
         return;
       }
-      if(!lastSubmissionId){
+      if(!uploadSucceeded || !lastSubmissionId || !lastS3Key){
         showStatus('Upload your video first.','error');
         submitButton.disabled=false;
         submitButton.textContent='Submit My Entry';
@@ -597,14 +579,13 @@
         stacheDescription:document.getElementById('fullness')?.value||'',
         stacheStyle:document.getElementById('generalStyle')?.value||'',
         stacheFrequency:document.getElementById('stacheFrequency')?.value||'',
-        talentDescription:document.getElementById('talentDescription')?.value||'',
-        talentOrigin:document.getElementById('talentOrigin')?.value||'',
         // NEW FIELD
         isSubmitterInVideo: document.getElementById('isSubmitterInVideo')?.value || '',
         submissionId:lastSubmissionId,
         fileUUID:lastSubmissionId,
         s3Key:lastS3Key,
-        marketingConsent:document.getElementById('consents').checked
+        eventId:'2026-mustache-games',
+        marketingConsent:document.getElementById('marketingConsent').checked
       };
 
       try{
