@@ -550,15 +550,6 @@
         <input type="text" id="region" name="region" autocomplete="address-level1" placeholder="If applicable">
       </div>
 
-      <!-- NEW FIELD: Are you the person in the video? -->
-      <div>
-        <label for="isSubmitterInVideo">Is this your mustache in the video?</label>
-        <select id="isSubmitterInVideo" required>
-          <option value="" disabled selected hidden>Select one…</option>
-          <option value="yes">Yes — it is my mustache</option>
-        </select>
-      </div>
-
       <!-- Structured consent card -->
       <div class="consent-card">
         <input type="checkbox" id="consents" required>
@@ -589,8 +580,32 @@
     <div class="form-section-container">
       <legend class="main-legend">Optional Information</legend>
       <p class="section-subtitle">
-        Tell us a little about your mustache. These questions are optional.
+        Share a social handle for tagging, or tell us a little about your mustache. Everything in this section is optional.
       </p>
+
+
+
+      <details class="accordion" open>
+        <summary>Tag Me in The Games (Optional)</summary>
+        <div class="accordion-content">
+          <p class="section-subtitle">Want us to tag you if we feature your entry? Share one social media account. This is completely optional.</p>
+          <div>
+            <label for="socialPlatform">Social Media Platform</label>
+            <select id="socialPlatform">
+              <option value="">Select a platform</option>
+              <option>TikTok</option>
+              <option>Instagram</option>
+              <option>Facebook</option>
+              <option>YouTube</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="socialHandle">Social Media Handle</label>
+            <input type="text" id="socialHandle" placeholder="@yourhandle" autocomplete="off">
+          </div>
+        </div>
+      </details>
 
       <details class="accordion">
         <summary>About Your 'Stache</summary>
@@ -624,44 +639,6 @@
               <option>Mostly Natural</option>
               <option>Wild or Untamed</option>
             </select>
-          </div>
-        </div>
-      </details>
-
-      <details class="accordion">
-        <summary>About You</summary>
-        <div class="accordion-content">
-          <div>
-            <label for="source">How did you hear about The Mustache Games?</label>
-            <select id="source">
-              <option value="">Select an option</option>
-              <option>Friend or Family</option>
-              <option>Social Media</option>
-              <option>Event Card</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-      </details>
-
-      <details class="accordion" open>
-        <summary>Tag Me in The Games (Optional)</summary>
-        <div class="accordion-content">
-          <p class="section-subtitle">Want us to tag you if we feature your entry? Share one social media account. This is completely optional.</p>
-          <div>
-            <label for="socialPlatform">Social Media Platform</label>
-            <select id="socialPlatform">
-              <option value="">Select a platform</option>
-              <option>TikTok</option>
-              <option>Instagram</option>
-              <option>Facebook</option>
-              <option>YouTube</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div>
-            <label for="socialHandle">Social Media Handle</label>
-            <input type="text" id="socialHandle" placeholder="@yourhandle" autocomplete="off">
           </div>
         </div>
       </details>
@@ -862,12 +839,9 @@
         region:countryField.value==='US'?stateField.value:regionField.value.trim(),
         socialPlatform:document.getElementById('socialPlatform')?.value||'',
         socialHandle:document.getElementById('socialHandle')?.value||'',
-        eventSource:document.getElementById('source')?.value||'',
         stacheDescription:document.getElementById('fullness')?.value||'',
         stacheStyle:document.getElementById('generalStyle')?.value||'',
         stacheFrequency:document.getElementById('stacheFrequency')?.value||'',
-        // NEW FIELD
-        isSubmitterInVideo: document.getElementById('isSubmitterInVideo')?.value || '',
         submissionId:lastSubmissionId,
         fileUUID:lastSubmissionId,
         s3Key:lastS3Key,
